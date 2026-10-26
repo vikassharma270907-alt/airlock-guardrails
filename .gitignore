@@ -40,3 +40,5 @@ analysis.pdf
 blueprint.pdf
 
 .vercel
+.runner_system_id
+.trusted_tools/
