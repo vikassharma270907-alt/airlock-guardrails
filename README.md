@@ -14,13 +14,13 @@ The table below reflects current verification status. Stages with live CI job ru
 |---|---|---|---|---|
 | **Plan** | Custom Flow `airlock_triage` | Reviews issue triage note | Read-only reader outputs strict JSON; writer never sees raw issue | not yet |
 | **Create** | Foundational Developer Flow | Creates issue, assigns task | Issue template prohibitions (size <300 lines, <10 files, no CI edits) | not yet |
-| **Verify** | CI `unit-tests` & Fix Pipeline | Escalation on 3 failures | Automated repair loop capped at 3 attempts; tests cannot be deleted | unit tests verified; Fix Pipeline not yet |
-| **Package** | CI `build-wheel` | Audits build logs | Standardized wheel packaged into `dist/` | Verified ([Pipeline #2989252436](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436)) |
-| **Secure** | SAST (`semgrep-sast`), Secret Detection, `sast-gate` | Security audit | `sast_gate.py` fails closed; requires scanner report and blocks High/Critical | scanner verified; MR gate not yet |
-| **Release** | `publish-staging` & `publish-production` | **Manual Approval** for prod | Staging package published automatically; production requires human click | staging published; production is a manual job, pending human approval |
-| **Configure** | CI `policy-gate` | Applies `control-plane-approved` | `policy_gate.py` blocks edits to `.gitlab-ci.yml`, `tools/`, or configs | not yet |
-| **Monitor** | CI `smoke-test` | Reviews test report | Installs wheel from Generic Package Registry and executes CLI | smoke-test job verified in Pipeline [#2989252436](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436) |
-| **Govern** | CI `scorecard` & `ledger` | Reviews audit scorecard | Ledger tracks each job result; markdown scorecard generated per run | scorecard job verified in Pipeline [#2989252436](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436) |
+| **Verify** | CI `unit-tests` & Fix Pipeline | Escalation on 3 failures | Automated repair loop capped at 3 attempts; tests cannot be deleted | unit tests verified ([Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028)); Fix Pipeline not yet |
+| **Package** | CI `build-wheel` | Audits build logs | Standardized wheel packaged into `dist/` | Verified ([Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028)) |
+| **Secure** | SAST (`semgrep-sast`), Secret Detection, `sast-gate` | Security audit | `sast_gate.py` fails closed; requires scanner report and blocks High/Critical | Verified (scanner in #2989694028; MR gate in [Pipeline #2989715383](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989715383)) |
+| **Release** | `publish-staging` & `publish-production` | **Manual Approval** for prod | Staging package published automatically; production requires human click | staging published; production is a manual job, pending human approval ([Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028)) |
+| **Configure** | CI `policy-gate` | Applies `control-plane-approved` | `policy_gate.py` blocks edits to `.gitlab-ci.yml`, `tools/`, or configs | Verified ([MR !2 Pipeline #2989716535](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535) & [MR !3 Pipeline #2989719601](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601)) |
+| **Monitor** | CI `smoke-test` | Reviews test report | Installs wheel from Generic Package Registry and executes CLI | smoke-test job verified in Pipeline [#2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028) |
+| **Govern** | CI `scorecard` & `ledger` | Reviews audit scorecard | Ledger tracks each job result; markdown scorecard generated per run | scorecard job verified in Pipeline [#2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028) |
 
 ---
 
@@ -122,8 +122,10 @@ The guardrails can be verified directly via real pipeline runs, flow sessions, a
 |---|---|---|---|---|
 | **Scenario 1: Prompt Injection Blocked** | [MR link] | [Flow Session link] | [Pipeline link] | Sanitized JSON output; security warning posted |
 | **Scenario 2: SAST Fix Re-Verification** | [MR link] | [Flow Session link] | [Pipeline link] | [Pending user MR run: Run 1 red on SAST, Run 2 green] |
-| **Scenario 3: Control Plane Protection** | [MR link] | [Flow Session link] | [Pipeline link] | Blocked red with `POLICY VIOLATION` |
-| **Main Branch Deployment & Scorecard** | N/A (merged) | N/A | [Pipeline #2989252436](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436) | Wheel packaged, 26 unit tests passed, smoke-tested, manual prod gate |
+| **Scenario 3: Control Plane Protection** | [MR !2](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/merge_requests/2) | N/A | [Pipeline #2989716535](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535) | Blocked red with `POLICY VIOLATION` (.gitlab-ci.yml tamper blocked) |
+| **Scenario 3b: Rename Evasion Defense** | [MR !3](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/merge_requests/3) | N/A | [Pipeline #2989719601](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601) | Blocked red with `POLICY VIOLATION` (deleted test detected via `--no-renames`) |
+| **Baseline Merge Request Run** | [MR !1](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/merge_requests/1) | N/A | [Pipeline #2989715383](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989715383) | Clean pass on all 7 MR jobs (unit-tests, sast, policy-gate, scorecard) |
+| **Main Branch Deployment & Scorecard** | N/A (merged) | N/A | [Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028) | Wheel packaged, 26 unit tests passed, smoke-tested, manual prod gate |
 
 ---
 
@@ -134,8 +136,8 @@ The guardrails can be verified directly via real pipeline runs, flow sessions, a
 | **Total Issues Processed** | [N] | Handled through dual-agent triage and Developer flow |
 | **Automated Fix Attempts** | [N] | Bounded by 3-attempt ceiling in `tools/fix_budget.py` |
 | **Successful Automated Fixes** | [N] | Re-scanned and verified clean by `tools/sast_gate.py` |
-| **Control Plane Violations Blocked** | [N] | Unauthorized `.gitlab-ci.yml` or test deletion halts |
-| **Human Approvals Required** | [N] | `control-plane-approved` and manual production gate |
+| **Control Plane Violations Blocked** | 2 | Verified: MR !2 (.gitlab-ci.yml tamper) & MR !3 (rename evasion) |
+| **Human Approvals Required** | 2 | `control-plane-approved` label for CI edits; manual `publish-production` release gate |
 
 ---
 

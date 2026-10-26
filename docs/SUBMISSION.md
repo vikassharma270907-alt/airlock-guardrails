@@ -39,14 +39,17 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
 - Staging Package Registry: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/packages
 - CI/CD Pipeline History: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines
-- Baseline Clean Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436
+- Baseline Clean Main Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028 (and #2989252436)
+- Baseline Clean MR Pipeline (MR !1): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989715383
+- Control-Plane Protection MR Pipeline (MR !2, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535
+- Rename-Evasion Defense MR Pipeline (MR !3, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601
 
 
 ### Real Results & Metrics
-- Total Scenarios Demonstrated: [N] (Injection attack blocked, security fix re-verified, control plane protected).
-- Control Plane Violations Blocked: [N]
-- Vulnerabilities Successfully Remediated & Verified: [N]
-- Human Approvals Required: [N] (Production release and control-plane modifications).
+- Total Scenarios Demonstrated: 3 (Prompt injection neutralized, control plane tampering blocked, rename evasion blocked).
+- Control Plane Violations Blocked: 2 (MR !2 unauthorized CI edit; MR !3 test deletion evasion).
+- Vulnerabilities Successfully Remediated & Verified: [N] (Pending live SAST scenario completion).
+- Human Approvals Required: 2 (`control-plane-approved` label and manual production release gate).
 
 ### Known Limitations (Stated Honestly)
 1. **Guardrail vs Security Boundary**: The policy gate is a programmatic guardrail, not an absolute security boundary. The gate runs inside the MR pipeline using the branch's code. Comprehensive protection requires pairing this gate with protected branches, "Pipelines must succeed", and human-owned CODEOWNERS.
