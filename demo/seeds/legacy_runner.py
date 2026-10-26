@@ -1,0 +1,22 @@
+"""Legacy task runner containing seeded security vulnerability for Demo Scenario 2."""
+
+import subprocess
+import sys
+
+
+def execute_expression(user_input: str):
+    """Vulnerable function seeded for SAST detection (eval on user input)."""
+    print(f"Executing: {user_input}")
+    # VULNERABILITY (CWE-95 / Python eval):
+    return eval(user_input)  # nosec
+
+
+def run_legacy_command(cmd_string: str):
+    """Vulnerable function seeded for SAST detection (shell=True command injection)."""
+    # VULNERABILITY (CWE-78 / Python shell=True):
+    return subprocess.run(cmd_string, shell=True, capture_output=True, text=True)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        print(execute_expression(sys.argv[1]))
