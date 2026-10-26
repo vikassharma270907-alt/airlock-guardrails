@@ -36,9 +36,11 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events [TO VERIFY: automatic trigger on tier vs manual widget click].
 
 ### Visible Pipeline History
-- Public Repository: [link]
-- Staging Package Registry: [link]
-- CI/CD Pipeline History: [link]
+- Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
+- Staging Package Registry: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/packages
+- CI/CD Pipeline History: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines
+- Baseline Clean Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989126680
+
 
 ### Real Results & Metrics
 - Total Scenarios Demonstrated: [N] (Injection attack blocked, security fix re-verified, control plane protected).

@@ -103,7 +103,8 @@ The deterministic guardrails can be verified directly via real pipeline runs, fl
 | **Scenario 1: Prompt Injection Blocked** | [MR link] | [Flow Session link] | [Pipeline link] | Sanitized JSON output; security warning posted |
 | **Scenario 2: SAST Fix Re-Verification** | [MR link] | [Flow Session link] | [Pipeline link] | Run 1 failed red on SAST; Run 2 passed green |
 | **Scenario 3: Control Plane Protection** | [MR link] | [Flow Session link] | [Pipeline link] | Blocked red with `POLICY VIOLATION` |
-| **Main Branch Deployment & Scorecard** | N/A (merged) | N/A | [Pipeline link] | Wheel packaged, smoke-tested, manual prod gate |
+| **Main Branch Deployment & Scorecard** | N/A (merged) | N/A | [Pipeline #2989126680](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989126680) | Wheel packaged, smoke-tested, manual prod gate |
+
 
 ---
 
