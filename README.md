@@ -11,7 +11,7 @@ Airlock introduces deterministic continuous integration guardrails and dual-agen
 | Lifecycle Stage | Automation Mechanism | Human Role | Guardrail / Boundary |
 |---|---|---|---|
 | **Plan** | Custom Flow `airlock_triage` | Reviews issue triage note | Read-only reader outputs strict JSON; writer never sees raw issue |
-| **Create** | Foundational Developer Flow | Creates issue, assigns task | Issue template prohibitions (size <150 lines, no CI edits) |
+| **Create** | Foundational Developer Flow | Creates issue, assigns task | Issue template prohibitions (size <300 lines, <10 files, no CI edits) |
 | **Verify** | CI `unit-tests` & Fix Pipeline | Escalation on 3 failures | Automated repair loop capped at 3 attempts; tests cannot be deleted |
 | **Package** | CI `build-wheel` | Audits build logs | Standardized wheel packaged into `dist/` |
 | **Secure** | SAST (`semgrep-sast`), Secret Detection, `sast-gate` | Security audit | `sast_gate.py` blocks MR on any High or Critical vulnerability |
@@ -74,6 +74,23 @@ pytest -q
 | publish-staging | success | PASSED |
 | smoke-test | success | PASSED |
 | publish-production | manual | PENDING HUMAN APPROVAL |
+
+---
+
+## Threat Model
+
+| Attack | Control | Type | Residual Risk |
+|---|---|---|---|
+| **Injection in issue text** | `airlock_triage` dual-agent architecture: read-only reader parses issue strictly as untrusted data and emits validated JSON schema; write-only writer formats comment with security alert without executing tools. | Architecture | Misleading semantic text could influence human reviewer if triage warning is ignored. |
+| **Injection in repo files read by reader** | Read-only toolset (`get_issue`, `list_files`, `grep`, `read_file`) prevents tool execution; output strictly schema-bound. | Architecture | Malicious snippets cited in summary must be verified by human reviewer. |
+| **Agent edits CI** | `tools/policy_gate.py` diffs against `$CI_MERGE_REQUEST_DIFF_BASE_SHA` and blocks `.gitlab-ci.yml` changes without `control-plane-approved` label; trusted gate script extracted from target branch. | Deterministic | MR could omit gate job unless paired with CODEOWNERS or external CI config. |
+| **Agent edits or deletes tests** | `tools/policy_gate.py` detects deleted files in `tests/` or matching `test_*.py` / `*_test.py` and halts pipeline without `control-plane-approved`. | Deterministic | Weakening assertions within existing tests without deletion (mitigated by SAST and code review). |
+| **Oversized MR** | `tools/policy_gate.py` blocks changes exceeding 10 files or 300 lines without `size-approved` label. | Deterministic | Concentrated high-risk changes within the 300-line limit still require diligent review. |
+| **Unverified security fix** | `tools/sast_gate.py` parses `gl-*report.json` and halts on High or Critical findings, independent of unit test outcomes. | Deterministic | Novel vulnerabilities not covered by SAST rule definitions. |
+| **Endless fix loop** | `tools/fix_budget.py` counts commits matching `agent-fix:` or agent author patterns and fails with `ESCALATE TO HUMAN` when exceeding 3 retries. | Deterministic | Commits authored under human Git identity bypass pattern matching (best-effort until CI-managed counter). |
+| **Token exfiltration** | Triage flow runs without write/shell tools (`coding_environment: none`); CI secrets masked; secret detection enabled in CI. | Architecture | Tests executed inside runner could attempt network egress if runner lacks network isolation. |
+| **Label applied by someone with permission** | GitLab audit events track label actions; Scorecard records required approvals; merge rules require human maintainer approval. | Architecture | Malicious or compromised project member with label-editing permissions. |
+| **Human rubber-stamping** | `tools/scorecard.py` highlights gate outcomes and commit provenance in MR widget; manual trigger required for production release. | Prompt / Process | Maintainer clicks approval without inspecting diffs or scorecard details. |
 
 ---
 

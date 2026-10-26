@@ -110,3 +110,18 @@ prompts:
       History:
       {{ history }}
 ```
+
+---
+
+## Flow 4: Foundational Code Review Flow (Pre-Human Reviewer)
+
+### Role in Airlock Architecture
+The GitLab Duo Foundational Code Review flow is configured as an automated, pre-human reviewer that runs immediately when an MR is opened or updated by an autonomous agent.
+
+### Verification Checklist Performed by Code Review Flow
+1. **Scope and File Count Verification**: Verifies whether the MR adheres to the single-purpose scope and stays within the 10-file / 300-line budget.
+2. **Test Preservation & Addition**: Confirms that existing unit tests have not been disabled or removed, and that new logic is accompanied by unit tests.
+3. **Control-Plane Path Detection**: Highlights any changes touching `.gitlab-ci.yml`, `policy/`, `tools/`, or `CODEOWNERS`, warning the human maintainer that `control-plane-approved` is required.
+4. **Code Quality & Anti-Pattern Check**: Flags unresolved TODOs, leftover debugging statements, raw `eval()` / `shell=True` calls, and unhandled exceptions.
+5. **Human Maintainer Summary**: Generates a structured review comment on the MR summarizing findings to accelerate human review.
+

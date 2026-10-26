@@ -39,6 +39,9 @@ Navigate to **AI > Flows** in the left project sidebar:
    - Enforce prohibitions defined in `.gitlab/issue_templates/agent_task.md`.
 3. **Foundational Flow: Fix CI/CD Pipeline Flow**:
    - Enable Fix Pipeline flow to diagnose and remediate broken CI/CD pipelines within a 3-attempt limit.
+4. **Foundational Flow: Code Review Flow (Pre-Human Reviewer)**:
+   - Enable the Code Review flow on Merge Requests to perform automated first-pass checks before human maintainer review.
+
 
 ---
 
