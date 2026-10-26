@@ -3,6 +3,7 @@ import json
 import os
 import sys
 
+REQUIRED_REPORTS = ("gl-sast-report.json",)
 DEFAULT_BLOCK = {"Critical", "High"}
 
 
@@ -18,6 +19,16 @@ def load_blocked_severities(config_path="policy/policy.json"):
             except Exception as e:
                 print(f"Warning: Failed to load policy file {path} ({e}); using defaults.")
     return set(DEFAULT_BLOCK)
+
+
+def missing_reports(directory=".", required=REQUIRED_REPORTS):
+    """Check for missing required security report files in directory."""
+    missing = []
+    for r in required:
+        path = os.path.join(directory, r)
+        if not os.path.exists(path):
+            missing.append(r)
+    return missing
 
 
 def scan_reports(pattern="gl-*report.json", blocked_severities=None):
@@ -45,9 +56,16 @@ def scan_reports(pattern="gl-*report.json", blocked_severities=None):
     return bad, files_checked
 
 
-def main():
+def main(directory="."):
+    missing = missing_reports(directory=directory)
+    if missing:
+        print(f"SAST GATE FAILED: Missing required security report(s): {missing}")
+        print("Failing closed: security scans must execute and generate reports before gate evaluation.")
+        sys.exit(1)
+
     blocked = load_blocked_severities()
-    bad, files = scan_reports("gl-*report.json", blocked_severities=blocked)
+    pattern = os.path.join(directory, "gl-*report.json")
+    bad, files = scan_reports(pattern, blocked_severities=blocked)
     print(f"Scanned {len(files)} security report(s) with blocked severities: {blocked}")
     print(f"Blocking findings: {len(bad)}")
     for b in bad:

@@ -5,8 +5,20 @@ import os
 import tempfile
 import pytest
 
-from tools.policy_gate import evaluate_policy, load_policy, DEFAULT_POLICY
-from tools.sast_gate import scan_reports, load_blocked_severities
+from tools.policy_gate import (
+    DEFAULT_POLICY,
+    evaluate_policy,
+    filter_human_labels,
+    is_human_applied,
+    load_policy,
+)
+from tools.sast_gate import (
+    REQUIRED_REPORTS,
+    load_blocked_severities,
+    missing_reports,
+    scan_reports,
+    main as sast_main,
+)
 from tools.fix_budget import evaluate_fix_budget, load_fix_budget_config
 from tools.scorecard import build_scorecard, classify_commits
 
@@ -69,6 +81,26 @@ def test_policy_gate_enforces_size_limits():
     assert len(violations_approved) == 0
 
 
+def test_policy_gate_blocks_renamed_protected_file():
+    # With --no-renames, renaming .gitlab-ci.yml -> ci_backup.yml generates:
+    # D: .gitlab-ci.yml, A: ci_backup.yml
+    files = ['.gitlab-ci.yml', 'ci_backup.yml']
+    deleted = ['.gitlab-ci.yml']
+    violations, hits = evaluate_policy(files, deleted, 25, [])
+    assert len(violations) >= 1
+    assert any("Control-plane files modified" in v for v in violations)
+    assert '.gitlab-ci.yml' in hits
+
+
+def test_policy_gate_blocks_renamed_test_file():
+    # With --no-renames, renaming tests/test_gates.py -> old_tests.py emits:
+    # D: tests/test_gates.py, A: old_tests.py
+    files = ['tests/test_gates.py', 'old_tests.py']
+    deleted = ['tests/test_gates.py']
+    violations, _ = evaluate_policy(files, deleted, 25, [])
+    assert any("Test files deleted without 'control-plane-approved'" in v for v in violations)
+
+
 def test_sast_gate_blocks_configured_severities():
     with tempfile.TemporaryDirectory() as tmpdir:
         report_path = os.path.join(tmpdir, "gl-sast-report.json")
@@ -96,6 +128,141 @@ def test_sast_gate_passes_clean_report():
         bad, files = scan_reports(os.path.join(tmpdir, "gl-*report.json"))
         assert len(files) == 1
         assert len(bad) == 0
+
+
+def test_sast_gate_fails_with_no_reports():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Directory is completely empty - must fail closed
+        missing = missing_reports(directory=tmpdir)
+        assert "gl-sast-report.json" in missing
+        with pytest.raises(SystemExit) as exc:
+            sast_main(directory=tmpdir)
+        assert exc.value.code == 1
+
+
+def test_sast_gate_fails_with_only_secret_detection_report():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        # Only secret-detection report present, required gl-sast-report.json missing
+        secret_report = os.path.join(tmpdir, "gl-secret-detection-report.json")
+        with open(secret_report, "w") as f:
+            json.dump({"vulnerabilities": []}, f)
+
+        missing = missing_reports(directory=tmpdir)
+        assert "gl-sast-report.json" in missing
+        with pytest.raises(SystemExit) as exc:
+            sast_main(directory=tmpdir)
+        assert exc.value.code == 1
+
+
+def test_sast_gate_passes_main_on_clean_report():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        report_path = os.path.join(tmpdir, "gl-sast-report.json")
+        with open(report_path, "w") as f:
+            json.dump({"vulnerabilities": []}, f)
+
+        ret = sast_main(directory=tmpdir)
+        assert ret == 0
+
+
+def test_sast_gate_ignores_medium_fails_on_high():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        report_path = os.path.join(tmpdir, "gl-sast-report.json")
+        # Report with Medium severity only
+        with open(report_path, "w") as f:
+            json.dump({
+                "vulnerabilities": [
+                    {"name": "Weak Hash", "severity": "Medium", "location": {"file": "crypto.py"}}
+                ]
+            }, f)
+
+        # Ignores Medium and passes cleanly
+        ret = sast_main(directory=tmpdir)
+        assert ret == 0
+
+        # Now add High severity vulnerability
+        with open(report_path, "w") as f:
+            json.dump({
+                "vulnerabilities": [
+                    {"name": "Weak Hash", "severity": "Medium", "location": {"file": "crypto.py"}},
+                    {"name": "Command Injection", "severity": "High", "location": {"file": "exec.py"}}
+                ]
+            }, f)
+
+        # Fails on High
+        with pytest.raises(SystemExit) as exc:
+            sast_main(directory=tmpdir)
+        assert exc.value.code == 1
+
+
+def test_is_human_applied_agent_applied():
+    agent_list = ["gitlab-duo", "agent-bot"]
+    events = [
+        {
+            "id": 1,
+            "action": "add",
+            "created_at": "2026-10-26T10:00:00Z",
+            "label": {"name": "control-plane-approved"},
+            "user": {"username": "gitlab-duo"}
+        }
+    ]
+    # Agent applied -> not human
+    assert not is_human_applied("control-plane-approved", events, agent_list)
+
+
+def test_is_human_applied_removed_label():
+    agent_list = ["gitlab-duo"]
+    events = [
+        {
+            "id": 1,
+            "action": "add",
+            "created_at": "2026-10-26T10:00:00Z",
+            "label": {"name": "control-plane-approved"},
+            "user": {"username": "alice_human"}
+        },
+        {
+            "id": 2,
+            "action": "remove",
+            "created_at": "2026-10-26T10:05:00Z",
+            "label": {"name": "control-plane-approved"},
+            "user": {"username": "alice_human"}
+        }
+    ]
+    # Latest action was remove -> label is not active/valid
+    assert not is_human_applied("control-plane-approved", events, agent_list)
+
+
+def test_is_human_applied_out_of_order_events():
+    agent_list = ["agent-bot"]
+    # Even if events are provided in reverse chronological order:
+    events = [
+        {
+            "id": 2,
+            "action": "add",
+            "created_at": "2026-10-26T11:00:00Z",
+            "label": {"name": "control-plane-approved"},
+            "user": {"username": "lead_maintainer"}
+        },
+        {
+            "id": 1,
+            "action": "add",
+            "created_at": "2026-10-26T10:00:00Z",
+            "label": {"name": "control-plane-approved"},
+            "user": {"username": "agent-bot"}
+        }
+    ]
+    # Chronologically, the human's add (11:00) overrides the agent's earlier add (10:00)
+    assert is_human_applied("control-plane-approved", events, agent_list)
+
+
+def test_filter_human_labels_fail_closed_without_token(monkeypatch):
+    monkeypatch.delenv("AIRLOCK_API_TOKEN", raising=False)
+    agent_list = ["agent-bot"]
+    labels = ["control-plane-approved", "agent-task", "size-approved"]
+    filtered = filter_human_labels(labels, agent_list, events=None)
+    # When token is missing and events is None, fail closed: strip approval labels
+    assert "control-plane-approved" not in filtered
+    assert "size-approved" not in filtered
+    assert "agent-task" in filtered
 
 
 def test_fix_budget_allows_under_limit():

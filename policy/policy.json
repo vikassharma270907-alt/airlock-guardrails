@@ -22,5 +22,6 @@
     "agent",
     "bot",
     "duo-developer"
-  ]
+  ],
+  "agent_usernames": []
 }

@@ -27,6 +27,22 @@ Create the following scoped/standard labels under **Manage > Labels**:
 
 ---
 
+## Section 2b: Label Provenance Token & Agent Account Configuration
+To prevent AI agents or automated bots from self-approving changes by attaching `control-plane-approved`:
+1. **Create Access Token**:
+   - Go to **Settings > Access Tokens** (Project or User Settings).
+   - Create a token with **Role: Developer/Reporter** and **Scope: `read_api`**.
+2. **Add CI/CD Variable**:
+   - Go to **Settings > CI/CD > Variables**.
+   - Key: `AIRLOCK_API_TOKEN`
+   - Value: `<your-token>`
+   - Flags: **Masked** (and expanded if needed).
+3. **Configure Agent Accounts in Policy**:
+   - In `policy/policy.json`, populate `agent_usernames` with known agent or bot usernames (e.g. `["gitlab-duo", "duo-developer"]`).
+   - When set, `tools/policy_gate.py` calls the GitLab REST API `resource_label_events` and verifies that approval labels were applied by human maintainers, failing closed if the token is missing or if the label was applied by an agent account.
+
+---
+
 ## Section 3: Duo Agent Platform Flows Setup
 Navigate to **AI > Flows** in the left project sidebar:
 1. **Custom Flow: `airlock_triage`**:
