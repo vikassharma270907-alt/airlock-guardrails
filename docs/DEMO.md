@@ -17,11 +17,12 @@ This runbook guides the exact execution of the three 40-second demonstration sce
 ---
 
 ### Scenario 2: Fix Verified Twice (0:55 - 1:35)
-- **Action**: Open an issue to fix the vulnerable `execute_expression` in `demo/seeds/legacy_runner.py` (which uses raw `eval()`).
-- **Autonomous Developer Flow**:
-  - The agent opens a Merge Request replacing `eval()` with `ast.literal_eval` or safe parsing.
+- **Setup**: Just before recording, copy `demo/seeds/legacy_runner.py.txt` into `airlock_demo/legacy_runner.py` so the seeded insecure pattern enters the scanned package directory.
+- **Action**: Open an issue to fix the vulnerable `execute_expression` in `airlock_demo/legacy_runner.py` (which contains an insecure `eval()` and `shell=True`).
+- **Autonomous Developer Flow (Expected)**:
+  - The agent opens a Merge Request replacing `eval()` with `ast.literal_eval` and safe parameter execution.
   - MR pipeline triggers:
-    1. First run: SAST gate fails on High finding (`gl-sast-report.json`).
+    1. First run: `sast-gate` fails on High/Critical finding in `gl-*report.json`.
     2. Agent inspects SAST report and updates implementation.
     3. If unit tests fail, the Fix Pipeline flow repairs the failure within the 3-attempt budget.
     4. Second run: SAST scan produces zero High/Critical findings; `sast-gate` turns green.

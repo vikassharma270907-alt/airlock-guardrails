@@ -3,6 +3,9 @@
 import subprocess
 import sys
 
+# Seeded hardcoded secret for Secret Detection (CWE-798):
+AWS_SECRET_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLEKEYDO_NOT_USE"
+
 
 def execute_expression(user_input: str):
     """Vulnerable function seeded for SAST detection (eval on user input)."""
