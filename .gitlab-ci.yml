@@ -108,8 +108,8 @@ smoke-test:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" -o airlock_demo-0.1-py3-none-any.whl "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/airlock_demo-0.1-py3-none-any.whl"'
-    - 'pip install airlock_demo-0.1-py3-none-any.whl'
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" -o airlock_demo-0.1.0-py3-none-any.whl "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/airlock_demo-0.1.0-py3-none-any.whl"'
+    - 'pip install airlock_demo-0.1.0-py3-none-any.whl'
     - 'python -m airlock_demo --help'
 
 scorecard:
