@@ -111,9 +111,9 @@ const stages = [
   { num: "04", name: "Package", mech: "build-wheel", desc: "Compiles Python distribution package into standardized dist/*.whl." },
   { num: "05", name: "Secure", mech: "sast_gate.py", desc: "Semgrep SAST and Secret Detection enforced; MR blocked on High/Critical flaws." },
   { num: "06", name: "Release", mech: "publish-staging", desc: "Package uploaded to Generic Package Registry; production gate paused for human." },
-  { num: "07", name: "Configure", mech: "policy_gate.py", desc: "Enforces control-plane immutability against unauthorized pipeline edits." },
+  { num: "07", name: "Configure", mech: "policy_gate.py", desc: "Enforces control-plane integrity against unauthorized pipeline edits." },
   { num: "08", name: "Monitor", mech: "smoke-test", desc: "Automated post-deploy job downloads wheel from registry and executes CLI." },
-  { num: "09", name: "Govern", mech: "scorecard.py", desc: "Compiles immutable execution ledger into auditable markdown scorecard." }
+  { num: "09", name: "Govern", mech: "scorecard.py", desc: "Compiles job artifact execution ledger into auditable markdown scorecard." }
 ];
 
 function switchScenario(id) {

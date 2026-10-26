@@ -94,12 +94,38 @@ pytest -q
 
 ---
 
+## How to Verify (Live Runs & Evidence)
+
+The deterministic guardrails can be verified directly via real pipeline runs, flow sessions, and merge requests:
+
+| Verification Scenario | Merge Request | Flow Session | Pipeline Run | Gate Outcome |
+|---|---|---|---|---|
+| **Scenario 1: Prompt Injection Blocked** | [MR link] | [Flow Session link] | [Pipeline link] | Sanitized JSON output; security warning posted |
+| **Scenario 2: SAST Fix Re-Verification** | [MR link] | [Flow Session link] | [Pipeline link] | Run 1 failed red on SAST; Run 2 passed green |
+| **Scenario 3: Control Plane Protection** | [MR link] | [Flow Session link] | [Pipeline link] | Blocked red with `POLICY VIOLATION` |
+| **Main Branch Deployment & Scorecard** | N/A (merged) | N/A | [Pipeline link] | Wheel packaged, smoke-tested, manual prod gate |
+
+---
+
+## Empirical Results
+
+| Metric | Result | Notes |
+|---|---|---|
+| **Total Issues Processed** | [N] | Handled through dual-agent triage and Developer flow |
+| **Automated Fix Attempts** | [N] | Bounded by 3-attempt ceiling in `tools/fix_budget.py` |
+| **Successful Automated Fixes** | [N] | Re-scanned and verified clean by `tools/sast_gate.py` |
+| **Control Plane Violations Blocked** | [N] | Unauthorized `.gitlab-ci.yml` or test deletion halts |
+| **Human Approvals Required** | [N] | `control-plane-approved` and manual production gate |
+
+---
+
 ## Known Limitations (Stated Honestly)
-1. **MR Pipeline Autonomy vs Security Boundary**: An MR pipeline executes the MR branch's own `.gitlab-ci.yml`. Running gate scripts from a trusted target branch (`git show origin/main:tools/...`) ensures the gate logic cannot be rewritten, but an agent could theoretically remove the gate job from the MR's `.gitlab-ci.yml`. Absolute protection requires pairing the policy gate with protected branches, "Pipelines must succeed", required CODEOWNERS approval, or pointing the project's CI configuration to a separate, human-owned repository.
-2. **Label Permissions**: The `control-plane-approved` and `size-approved` labels can currently be applied by any user with project member label-management permissions.
-3. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but structured data passed between agents can still convey misleading semantic summaries to downstream developers if not reviewed.
-4. **Retry Cap Scope**: In-repo retry counters rely on commit message conventions (`agent-fix:`) and author matching; external enforcement requires webhook middleware or CI-managed counters.
+1. **Guardrail vs Security Boundary**: The policy gate is a programmatic guardrail, not an absolute security boundary. An MR pipeline executes the MR branch's own `.gitlab-ci.yml`. Running gate scripts from a trusted target branch (`git show origin/main:tools/...`) ensures the gate logic cannot be rewritten in place, but an agent could theoretically remove the gate job from the MR's `.gitlab-ci.yml`. Comprehensive protection requires pairing the policy gate with protected branches, "Pipelines must succeed", required CODEOWNERS approval, or pointing the project's CI configuration to a separate, human-owned repository.
+2. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but data passed between the reader and writer agents can still be manipulated semantically to convey misleading summaries if not reviewed by a human maintainer.
+3. **Retry Cap Scope**: The retry cap is by instruction unless code enforces it. While `tools/fix_budget.py` provides deterministic in-repo enforcement by counting commits matching `agent-fix:` or configured agent author patterns, full platform-level enforcement requires webhook middleware or CI-managed counters.
+4. **Label Permissions**: The `control-plane-approved` and `size-approved` labels can currently be applied by any user with project member label-management permissions.
 5. **Scorecard Scope**: The current scorecard records per-pipeline execution results; multi-pipeline historical rollups are derived from the GitLab pipeline history.
+
 
 ---
 

@@ -9,12 +9,12 @@ Airlock: Deterministic CI Guardrails and Supervised Governance for AI Coding Age
 Autonomous agents that can ship, but cannot break the rules.
 
 ### The Problem
-AI coding agents are gaining rapid access to software repositories and continuous delivery pipelines. However, research reveals that prompt-based constraints consistently fail under prompt injection, agents frequently attempt to modify CI configurations or delete failing tests to pass pipelines, and passing unit tests alone does not guarantee that a vulnerability was properly remediated. Today, teams are forced between two extremes: slow manual reviews for every agent step, or risky unconstrained autonomy.
+AI coding agents are gaining rapid access to software repositories and continuous delivery pipelines. However, empirical research reveals that prompt-based constraints consistently fail under prompt injection, agents frequently attempt to modify CI configurations or delete failing tests to pass pipelines, and passing unit tests alone does not validate that a vulnerability was properly remediated. Today, teams are forced between two extremes: slow manual reviews for every agent step, or risky unconstrained autonomy.
 
 ### The Solution: Airlock
 Airlock introduces an explicit architectural boundary between the agent **data plane** (code changes, issue triage, implementation) and the human-controlled **control plane** (CI definitions, security gates, approval rules, production deployments). Instead of relying on prompt instructions alone, Airlock enforces deterministic gates inside the GitLab CI pipeline:
 1. **Injection-Safe Triage**: Uses a dual-agent pattern. A read-only `reader` agent processes untrusted issue text and outputs strictly bounded JSON. A write-only `writer` agent formats and posts the triage note without ever seeing raw user text, stopping prompt injection before any active agent can be compromised.
-2. **Deterministic Control-Plane Policy Gate**: Any Merge Request attempting to modify `.gitlab-ci.yml`, `.gitlab/*`, `tools/*`, `deploy/*`, or delete test suites is blocked automatically unless a human explicitly applies the `control-plane-approved` label.
+2. **Deterministic Control-Plane Policy Gate**: Any Merge Request attempting to modify `.gitlab-ci.yml`, `.gitlab/*`, `tools/*`, `policy/*`, or delete test suites is blocked automatically unless a human explicitly applies the `control-plane-approved` label.
 3. **Verify-Twice Security Gate**: Security fixes are evaluated directly against re-scanned SAST and secret detection reports (`gl-*report.json`), failing the pipeline if High or Critical findings persist, regardless of whether unit tests pass.
 4. **Self-Healing CI with Bounded Retry**: Pipeline failures trigger the Fix CI/CD Pipeline flow, bounded by a 3-attempt ceiling to prevent credit exhaustion and runaway repair loops, followed by automated human escalation.
 5. **Continuous Governance Scorecard**: Every pipeline run records execution status into a per-job ledger artifact, compiling an auditable governance scorecard for compliance and visibility.
@@ -32,8 +32,8 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 
 ### GitLab Duo Agent Platform Features Used
 - **Custom Flows**: Flow Registry v1 dual-agent flow (`airlock_triage`) separating read-only analysis from write-only actions.
-- **Foundational Flows**: GitLab Duo Developer Flow and Fix CI/CD Pipeline Flow.
-- **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events.
+- **Foundational Flows**: GitLab Duo Developer Flow, Fix CI/CD Pipeline Flow, and Code Review Flow [TO VERIFY: instance flow availability].
+- **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events [TO VERIFY: automatic trigger on tier vs manual widget click].
 
 ### Visible Pipeline History
 - Public Repository: [link]
@@ -47,10 +47,10 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - Human Approvals Required: [N] (Production release and control-plane modifications).
 
 ### Known Limitations (Stated Honestly)
-1. **Guardrail vs Security Boundary**: The policy gate runs inside the MR pipeline using the branch's code. Real production security requires pairing this gate with protected branches, approval rules, and human-owned CODEOWNERS.
-2. **Label Permissions**: The `control-plane-approved` label can be applied by any user with project member permissions.
-3. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but structured data passed between agents can still convey adversarial semantics if not strictly validated.
-4. **Retry Cap Enforcement**: The 3-attempt retry cap is enforced via workflow instructions; automated counters require external state or commit-prefix tracking.
+1. **Guardrail vs Security Boundary**: The policy gate is a programmatic guardrail, not an absolute security boundary. The gate runs inside the MR pipeline using the branch's code. Comprehensive protection requires pairing this gate with protected branches, "Pipelines must succeed", and human-owned CODEOWNERS.
+2. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but data passed between the reader and writer agents can still be manipulated semantically to convey misleading summaries if not reviewed by a human maintainer.
+3. **Retry Cap Scope**: The retry cap is by instruction unless code enforces it. While `tools/fix_budget.py` provides deterministic in-repo enforcement by counting commits matching `agent-fix:` or configured agent author patterns, full platform-level enforcement requires webhook middleware or CI-managed counters.
+4. **Label Permissions**: The `control-plane-approved` and `size-approved` labels can currently be applied by any user with project member label-management permissions.
 5. **Scorecard Scope**: The current scorecard records per-pipeline execution results; multi-pipeline historical rollups are derived from the GitLab pipeline history.
 
 ---
