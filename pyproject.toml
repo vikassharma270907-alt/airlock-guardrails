@@ -8,9 +8,18 @@ version = "0.1.0"
 description = "Airlock: Deterministic CI guardrails and dual-agent governance for AI coding agents"
 readme = "README.md"
 authors = [{ name = "Vikas Sharma" }]
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.10"
 dependencies = []
 
 [project.scripts]
 airlock-demo = "airlock_demo.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["airlock_demo*"]
+
+[tool.vercel]
+entrypoint = "main:app"
+
+
+

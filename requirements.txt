@@ -1,0 +1,1 @@
+# Airlock web dashboard uses Python standard library WSGI (no external dependencies required)
