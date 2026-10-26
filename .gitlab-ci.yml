@@ -64,6 +64,7 @@ policy-gate:
   script:
     - mkdir -p .trusted_tools
     - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/policy_gate.py" > .trusted_tools/policy_gate.py || cp tools/policy_gate.py .trusted_tools/policy_gate.py
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
     - python .trusted_tools/policy_gate.py
 
 sast-gate:
@@ -76,7 +77,21 @@ sast-gate:
   script:
     - mkdir -p .trusted_tools
     - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/sast_gate.py" > .trusted_tools/sast_gate.py || cp tools/sast_gate.py .trusted_tools/sast_gate.py
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
     - python .trusted_tools/sast_gate.py
+
+fix-budget:
+  extends: .ledger
+  stage: gate
+  variables:
+    GIT_DEPTH: '0'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  script:
+    - mkdir -p .trusted_tools
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/fix_budget.py" > .trusted_tools/fix_budget.py || cp tools/fix_budget.py .trusted_tools/fix_budget.py
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
+    - python .trusted_tools/fix_budget.py
 
 publish-staging:
   stage: staging
