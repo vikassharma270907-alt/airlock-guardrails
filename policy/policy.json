@@ -1,0 +1,26 @@
+{
+  "protected_paths": [
+    ".gitlab-ci.yml",
+    ".gitlab/*",
+    "policy/*",
+    "deploy/*",
+    "CODEOWNERS",
+    "tools/*"
+  ],
+  "max_files": 10,
+  "max_lines": 300,
+  "control_plane_label": "control-plane-approved",
+  "size_label": "size-approved",
+  "blocked_severities": [
+    "Critical",
+    "High"
+  ],
+  "max_agent_fix_attempts": 3,
+  "agent_commit_prefix": "agent-fix:",
+  "agent_author_patterns": [
+    "GitLab Duo",
+    "agent",
+    "bot",
+    "duo-developer"
+  ]
+}

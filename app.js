@@ -106,7 +106,7 @@ Human maintainer must review and manually apply 'control-plane-approved' label.`
 
 const stages = [
   { num: "01", name: "Plan", mech: "airlock_triage", desc: "Dual-agent custom flow triages issue and detects hidden prompt injections." },
-  { num: "02", name: "Create", mech: "Developer Flow", desc: "Foundational agent converts issue into bounded MR under 150 changed lines." },
+  { num: "02", name: "Create", mech: "Developer Flow", desc: "Foundational agent converts issue into bounded MR under 10 files and 300 lines." },
   { num: "03", name: "Verify", mech: "unit-tests & Fixer", desc: "13 automated unit tests validate code; Fix Pipeline repairs broken builds." },
   { num: "04", name: "Package", mech: "build-wheel", desc: "Compiles Python distribution package into standardized dist/*.whl." },
   { num: "05", name: "Secure", mech: "sast_gate.py", desc: "Semgrep SAST and Secret Detection enforced; MR blocked on High/Critical flaws." },
