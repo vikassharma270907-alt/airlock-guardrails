@@ -2,6 +2,8 @@
 
 Airlock translates empirical findings from software engineering and AI security research into deterministic CI/CD guardrails.
 
+> Note: Citations were not independently verified in full; see each paper.
+
 ---
 
 ### 1. Control Plane vs. Data Plane Separation
@@ -39,8 +41,7 @@ Airlock translates empirical findings from software engineering and AI security 
 ### 5. Bounded Repair Loops & Deterministic Rules First
 - **Sources**:
   - *"Agentic RL for Real-World Code Repair"* (arXiv 2510.22075).
-  - *RELAY: Scaling Historical Build Restoration through Rule Reuse and Agentic Repair* (arXiv 2610.27784).
-- **Core Finding**: RELAY demonstrates that deploying unconstrained LLM agents for every build failure is computationally expensive and inefficient; combining deterministic, reusable rules first with selective agent escalation yields far higher repair rates at reduced cost. In parallel, arXiv 2510.22075 establishes bounded repair evaluations (capping repair attempts at 3 iterations) to maintain stability.
+- **Core Finding**: Establishing bounded repair evaluations (capping repair attempts at 3 iterations) prevents runaway loops and maintains build stability before escalating to human maintainers.
 - **Airlock Implementation**: The Fix CI/CD Pipeline flow applies a 3-attempt ceiling before triggering human escalation.
 
 ---

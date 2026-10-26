@@ -39,7 +39,7 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
 - Staging Package Registry: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/packages
 - CI/CD Pipeline History: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines
-- Baseline Clean Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989126680
+- Baseline Clean Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989252436
 
 
 ### Real Results & Metrics
@@ -52,7 +52,7 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 1. **Guardrail vs Security Boundary**: The policy gate is a programmatic guardrail, not an absolute security boundary. The gate runs inside the MR pipeline using the branch's code. Comprehensive protection requires pairing this gate with protected branches, "Pipelines must succeed", and human-owned CODEOWNERS.
 2. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but data passed between the reader and writer agents can still be manipulated semantically to convey misleading summaries if not reviewed by a human maintainer.
 3. **Retry Cap Scope**: The retry cap is by instruction unless code enforces it. While `tools/fix_budget.py` provides deterministic in-repo enforcement by counting commits matching `agent-fix:` or configured agent author patterns, full platform-level enforcement requires webhook middleware or CI-managed counters.
-4. **Label Permissions**: The `control-plane-approved` and `size-approved` labels can currently be applied by any user with project member label-management permissions.
+4. **Label Permissions & Token Scope**: Verification of human label provenance relies on `AIRLOCK_API_TOKEN` (`read_api` scope) calling GitLab REST APIs. If the token is missing or invalid, the gate fails closed by ignoring approval labels. The label-provenance check has not yet been exercised on a live merge request.
 5. **Scorecard Scope**: The current scorecard records per-pipeline execution results; multi-pipeline historical rollups are derived from the GitLab pipeline history.
 
 ---

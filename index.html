@@ -160,8 +160,8 @@
 
         <div class="scorecard-container">
           <div class="scorecard-header">
-            <div class="scorecard-badge">Sample Format &bull; Baseline Ref: main</div>
-            <div class="scorecard-status">Status: SAMPLE GOVERNANCE OUTPUT</div>
+            <div class="scorecard-badge">Sample Format &bull; Baseline Ref: Pipeline #2989252436</div>
+            <div class="scorecard-status">SAMPLE GOVERNANCE OUTPUT</div>
           </div>
           <table class="scorecard-table">
             <thead>
@@ -173,29 +173,18 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Baseline Default-Branch Pipeline (main) Verified Jobs -->
+              <tr>
+                <td><strong>build-wheel</strong></td>
+                <td><span class="status-pill status-pass">success</span></td>
+                <td>Verified wheel package compiled in <code>dist/</code></td>
+                <td><code>python -m build --wheel</code></td>
+              </tr>
               <tr>
                 <td><strong>unit-tests</strong></td>
                 <td><span class="status-pill status-pass">success</span></td>
                 <td>Verified 26 unit tests passed</td>
                 <td><code>pytest -v</code></td>
-              </tr>
-              <tr>
-                <td><strong>policy-gate</strong></td>
-                <td><span class="status-pill status-pass">success</span></td>
-                <td>0 control-plane violations; diff bounds verified</td>
-                <td><code>tools/policy_gate.py</code> (--no-renames)</td>
-              </tr>
-              <tr>
-                <td><strong>sast-gate</strong></td>
-                <td><span class="status-pill status-pass">success</span></td>
-                <td>Requires report; 0 High/Critical findings</td>
-                <td><code>tools/sast_gate.py</code> (fail-closed)</td>
-              </tr>
-              <tr>
-                <td><strong>build-wheel</strong></td>
-                <td><span class="status-pill status-pass">success</span></td>
-                <td>Compiled wheel package in <code>dist/</code></td>
-                <td><code>python -m build --wheel</code></td>
               </tr>
               <tr>
                 <td><strong>publish-staging</strong></td>
@@ -215,6 +204,19 @@
                 <td><strong>Pending Human Approval (Supervised Autonomy)</strong></td>
                 <td>Human Maintainer Authorization</td>
               </tr>
+              <!-- Illustrative MR-Only Gates -->
+              <tr>
+                <td><strong>policy-gate</strong></td>
+                <td><span class="status-pill status-manual" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1;">illustrative</span></td>
+                <td>Illustrative MR gate (not run in default-branch pipeline)</td>
+                <td><code>tools/policy_gate.py</code> (--no-renames)</td>
+              </tr>
+              <tr>
+                <td><strong>sast-gate</strong></td>
+                <td><span class="status-pill status-manual" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1;">illustrative</span></td>
+                <td>Illustrative MR gate (not run in default-branch pipeline)</td>
+                <td><code>tools/sast_gate.py</code> (fail-closed)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -226,35 +228,35 @@
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Grounded in Empirical Research</h2>
-          <p class="section-subtitle">Airlock translates findings from peer-reviewed software engineering and agent security studies into deterministic code.</p>
+          <p class="section-subtitle">Airlock translates findings from software engineering and agent security studies into deterministic code. Citations were not independently verified in full; see each paper.</p>
         </div>
 
         <div class="research-grid">
           <div class="research-card">
             <div class="research-badge">arXiv 2605.07062</div>
             <h3 class="research-title">From Assistance to Agency: Rethinking Autonomy and Control in CI/CD</h3>
-            <p class="research-excerpt">"No documented agentic CI/CD deployment delegates control-plane authority without human approval. Governance carries the primary safety burden."</p>
+            <p class="research-excerpt">Studies emphasize that agentic CI/CD deployments require strict external governance over control-plane actions rather than unverified autonomous delegation.</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> <code>policy_gate.py</code> blocks all edits to CI/CD pipelines, tools, and test suites.</div>
           </div>
 
           <div class="research-card">
             <div class="research-badge">GitLab Docs & arXiv 2606.09935</div>
             <h3 class="research-title">Security Threats in Agentic Systems & GitInject</h3>
-            <p class="research-excerpt">"Untrusted issue and PR comment text forms a lethal injection vector when combined with privileged tools and external side effects."</p>
+            <p class="research-excerpt">Untrusted issue descriptions and pull request comments can introduce indirect prompt injection risks when connected to active agent tooling.</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> Dual-agent reader/writer split ensures untrusted text never reaches active tools.</div>
           </div>
 
           <div class="research-card">
-            <div class="research-badge">Yu et al. &bull; arXiv 2603.06858</div>
+            <div class="research-badge">arXiv 2603.06858</div>
             <h3 class="research-title">Patch Validation in Automated Vulnerability Repair</h3>
-            <p class="research-excerpt">"Over 40% of automated patches that pass test suites fail exploit validation. Re-scanning is mandatory to prove security remediation."</p>
+            <p class="research-excerpt">Empirical evaluations show that automated patches passing unit tests may still fail exploit testing, making independent security re-scanning necessary.</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> <code>sast_gate.py</code> requires clean re-scans, halting MRs on High/Critical findings.</div>
           </div>
 
           <div class="research-card">
-            <div class="research-badge">arXiv 2510.22075 & 2610.27784</div>
-            <h3 class="research-title">Bounded Repair & RELAY Rule Reuse</h3>
-            <p class="research-excerpt">"Applying deterministic rules first before agent repair scales build restoration cost-effectively. Bounding iterations at 3 prevents runaway loops."</p>
+            <div class="research-badge">arXiv 2510.22075</div>
+            <h3 class="research-title">Bounded Repair Iteration Budgets</h3>
+            <p class="research-excerpt">Research supports enforcing bounded iterations (capping automated fix attempts at 3) to maintain pipeline stability before escalating to human engineers.</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> Fix Pipeline flow enforced with a strict 3-attempt ceiling before human escalation.</div>
           </div>
         </div>

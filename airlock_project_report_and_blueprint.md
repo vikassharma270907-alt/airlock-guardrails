@@ -16,7 +16,7 @@ When coding agents are bounded solely by system prompt instructions, empirical r
 1. Indirect prompt injection inside untrusted issues, comments, or commit messages easily subverts prompt-only rules (*GitInject*, *Agentic Workflow Injection*).
 2. Autonomous agents may delete failing test suites or modify pipeline configuration files to force pipelines green unless constrained by external execution guardrails (*AgentGuard*, arXiv 2609.16287).
 3. Unit test passing alone is insufficient to validate vulnerability fixes; empirical analysis demonstrates that over 40% of test-passing automated patches fail stricter exploit validation (*Yu et al.*, arXiv 2603.06858).
-4. Unbounded automated fix loops risk repetitive iterations and exhaust token quotas (*RELAY*, arXiv 2610.27784; *Bounded Repair*, arXiv 2510.22075).
+4. Unbounded automated fix loops risk repetitive iterations and exhaust token quotas (*Bounded Repair*, arXiv 2510.22075).
 
 **Airlock establishes programmatic CI/CD guardrails** around agents. By separating the agent **data plane** (issue triage, code generation, feature development) from the human-controlled **control plane** (pipeline definitions, security gates, approval rules, production releases), Airlock ensures that agents can ship code autonomously while remaining bounded by deterministic external gates.
 
@@ -263,9 +263,9 @@ Airlock is built upon empirical software engineering and AI security research:
 4. **Vulnerability Fix Validation:**  
    *Yu et al., "Patch Validation in Automated Vulnerability Repair" (arXiv 2603.06858).*  
    Evaluations across automated vulnerability repair systems showed over 40% of patches that passed test suites failed stricter exploit validation. Fixes must be validated by re-scanning.
-5. **Bounded Repair Loops & Rule Reuse:**  
-   *"Agentic RL for Real-World Code Repair" (arXiv 2510.22075)* & *RELAY (arXiv 2610.27784).*  
-   RELAY demonstrates that applying deterministic rules first before escalating to LLM agents scales build repair cost-effectively. Capping repair iterations at 3 (supported by arXiv 2510.22075) prevents runaway loops.
+5. **Bounded Repair Loops:**  
+   *"Agentic RL for Real-World Code Repair" (arXiv 2510.22075).*  
+   Research demonstrates that bounding automated fix evaluations and capping repair iterations at 3 prevents runaway loops and maintains build stability before human escalation.
 6. **Empirical Characteristics of Agent PRs:**  
    *Ehsani et al., "Where Do AI Coding Agents Fail? An Empirical Study of Failed Agentic Pull Requests in GitHub" (arXiv 2601.15195).*  
    In 33,596 agent PRs, rejected PRs were larger, touched more files, and experienced higher CI failure rates. Airlock bounds MR size to 10 files and 300 changed lines.
