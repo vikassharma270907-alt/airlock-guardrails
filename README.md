@@ -90,7 +90,7 @@ pytest -q
 - Barnes, Ghaleb, Hassan, *"From Assistance to Agency: Rethinking Autonomy and Control in CI/CD Pipelines"* (arXiv 2605.07062)
 - GitLab Security Documentation: *"Security threats in agentic systems"*
 - *GitInject* (arXiv 2606.09935) & *Agentic Workflow Injection* (arXiv 2605.07135)
-- *Progent* (arXiv 2504.11703) & *"Guardrails Beat Guidance"* (arXiv 2604.11088)
+- *AgentGuard* (arXiv 2609.16287) & *"Guardrails Beat Guidance"* (arXiv 2604.11088)
 - Ehsani et al., *"Where Do AI Coding Agents Fail?"* (arXiv 2601.15195)
 - Yu et al., *"Patch Validation in Automated Vulnerability Repair"* (arXiv 2603.06858)
 - *"Agentic RL for Real-World Code Repair"* (arXiv 2510.22075) & *RELAY* (arXiv 2610.27784)

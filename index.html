@@ -236,20 +236,20 @@
             <div class="research-badge">GitLab Docs & arXiv 2606.09935</div>
             <h3 class="research-title">Security Threats in Agentic Systems & GitInject</h3>
             <p class="research-excerpt">"Untrusted issue and PR comment text forms a lethal injection vector when combined with privileged tools and external side effects."</p>
-            <div class="research-impl"><strong>Airlock Guardrail:</strong> Dual-agent reader/writer split guarantees untrusted text never reaches active tools.</div>
+            <div class="research-impl"><strong>Airlock Guardrail:</strong> Dual-agent reader/writer split ensures untrusted text never reaches active tools.</div>
           </div>
 
           <div class="research-card">
-            <div class="research-badge">arXiv 2603.06858 & 2609.04075</div>
-            <h3 class="research-title">Patch Validation in Automated Vulnerability Repair & PatchBench</h3>
+            <div class="research-badge">Yu et al. &bull; arXiv 2603.06858</div>
+            <h3 class="research-title">Patch Validation in Automated Vulnerability Repair</h3>
             <p class="research-excerpt">"Over 40% of automated patches that pass test suites fail exploit validation. Re-scanning is mandatory to prove security remediation."</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> <code>sast_gate.py</code> requires clean re-scans, halting MRs on High/Critical findings.</div>
           </div>
 
           <div class="research-card">
             <div class="research-badge">arXiv 2510.22075 & 2610.27784</div>
-            <h3 class="research-title">Agentic RL for Real-World Code Repair & RELAY</h3>
-            <p class="research-excerpt">"Unbounded fix loops suffer from compounding degradation. Capping repair attempts at three iterations prevents runaway compute loss."</p>
+            <h3 class="research-title">Bounded Repair & RELAY Rule Reuse</h3>
+            <p class="research-excerpt">"Applying deterministic rules first before agent repair scales build restoration cost-effectively. Bounding iterations at 3 prevents runaway loops."</p>
             <div class="research-impl"><strong>Airlock Guardrail:</strong> Fix Pipeline flow enforced with a strict 3-attempt ceiling before human escalation.</div>
           </div>
         </div>

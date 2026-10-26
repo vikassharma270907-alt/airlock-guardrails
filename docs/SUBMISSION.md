@@ -16,12 +16,12 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 1. **Injection-Safe Triage**: Uses a dual-agent pattern. A read-only `reader` agent processes untrusted issue text and outputs strictly bounded JSON. A write-only `writer` agent formats and posts the triage note without ever seeing raw user text, stopping prompt injection before any active agent can be compromised.
 2. **Deterministic Control-Plane Policy Gate**: Any Merge Request attempting to modify `.gitlab-ci.yml`, `.gitlab/*`, `tools/*`, `deploy/*`, or delete test suites is blocked automatically unless a human explicitly applies the `control-plane-approved` label.
 3. **Verify-Twice Security Gate**: Security fixes are evaluated directly against re-scanned SAST and secret detection reports (`gl-*report.json`), failing the pipeline if High or Critical findings persist, regardless of whether unit tests pass.
-4. **Self-Healing CI with Bounded Retry**: Pipeline failures trigger the Fix CI/CD Pipeline flow, bounded by a 3-attempt ceiling to prevent credit exhaustion or recursive degradation, followed by automated human escalation.
-5. **Continuous Governance Scorecard**: Every pipeline run records execution status into an immutable ledger, compiling an auditable governance scorecard for compliance and visibility.
+4. **Self-Healing CI with Bounded Retry**: Pipeline failures trigger the Fix CI/CD Pipeline flow, bounded by a 3-attempt ceiling to prevent credit exhaustion and runaway repair loops, followed by automated human escalation.
+5. **Continuous Governance Scorecard**: Every pipeline run records execution status into a per-job ledger artifact, compiling an auditable governance scorecard for compliance and visibility.
 
 ### DevSecOps Lifecycle Stages Touched
 - **Plan**: Custom flow `airlock_triage` on issue mention trigger parses requirements and flags prompt injection.
-- **Create**: Foundational Developer flow turns issues into bounded MRs under 150 changed lines.
+- **Create**: Foundational Developer flow turns issues into bounded MRs under 10 files and 300 changed lines.
 - **Verify**: Unit tests validate code logic; Fix Pipeline flow automatically remediates failures.
 - **Package**: `build-wheel` packages Python distribution artifacts into `dist/`.
 - **Secure**: GitLab SAST (`semgrep-sast`) and Secret Detection templates scan MRs, enforced by `sast_gate.py`.
