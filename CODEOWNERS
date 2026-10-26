@@ -1,0 +1,8 @@
+# GitLab Code Owners for Airlock Control Plane
+# Assigns control-plane files to human owner (@beyondnothing01)
+
+/.gitlab-ci.yml @beyondnothing01
+/.gitlab/ @beyondnothing01
+/policy/ @beyondnothing01
+/tools/ @beyondnothing01
+/CODEOWNERS @beyondnothing01

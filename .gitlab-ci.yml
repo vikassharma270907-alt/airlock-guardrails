@@ -62,15 +62,21 @@ policy-gate:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
-    - python tools/policy_gate.py
+    - mkdir -p .trusted_tools
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/policy_gate.py" > .trusted_tools/policy_gate.py || cp tools/policy_gate.py .trusted_tools/policy_gate.py
+    - python .trusted_tools/policy_gate.py
 
 sast-gate:
   extends: .ledger
   stage: gate
+  variables:
+    GIT_DEPTH: '0'
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
-    - python tools/sast_gate.py
+    - mkdir -p .trusted_tools
+    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/sast_gate.py" > .trusted_tools/sast_gate.py || cp tools/sast_gate.py .trusted_tools/sast_gate.py
+    - python .trusted_tools/sast_gate.py
 
 publish-staging:
   stage: staging

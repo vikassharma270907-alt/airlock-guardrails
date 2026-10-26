@@ -78,10 +78,10 @@ pytest -q
 ---
 
 ## Known Limitations (Stated Honestly)
-1. **Guardrail vs Security Boundary**: The policy gate runs inside the MR pipeline using the branch's code. Real production security requires pairing this gate with protected branches, approval rules, and human-owned CODEOWNERS.
-2. **Label Permissions**: The `control-plane-approved` label can be applied by any user with project member permissions.
-3. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but structured data passed between agents can still convey adversarial semantics if not strictly validated.
-4. **Retry Cap Enforcement**: The 3-attempt retry cap is enforced via workflow instructions; automated counters require external state or commit-prefix tracking.
+1. **MR Pipeline Autonomy vs Security Boundary**: An MR pipeline executes the MR branch's own `.gitlab-ci.yml`. Running gate scripts from a trusted target branch (`git show origin/main:tools/...`) ensures the gate logic cannot be rewritten, but an agent could theoretically remove the gate job from the MR's `.gitlab-ci.yml`. Absolute protection requires pairing the policy gate with protected branches, "Pipelines must succeed", required CODEOWNERS approval, or pointing the project's CI configuration to a separate, human-owned repository.
+2. **Label Permissions**: The `control-plane-approved` and `size-approved` labels can currently be applied by any user with project member label-management permissions.
+3. **Context Minimization Limits**: The reader/writer split protects control flow and prevents tool hijacking, but structured data passed between agents can still convey misleading semantic summaries to downstream developers if not reviewed.
+4. **Retry Cap Scope**: In-repo retry counters rely on commit message conventions (`agent-fix:`) and author matching; external enforcement requires webhook middleware or CI-managed counters.
 5. **Scorecard Scope**: The current scorecard records per-pipeline execution results; multi-pipeline historical rollups are derived from the GitLab pipeline history.
 
 ---
