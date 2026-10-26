@@ -2,7 +2,7 @@
 
 **GitLab Transcend Hackathon ("Life After Code")**  
 **Submission Path:** Path A (Start Fresh) | **Autonomy Level:** Supervised  
-**Target Project:** `https://gitlab.com/beyondnothing-group/beyondnothing-project`  
+**Target Project:** `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase`  
 **Repository Branch:** `main`  
 **Local Workspace:** `d:\gitlab transcend hackathon`  
 
@@ -313,8 +313,8 @@ tests/test_word_count_multiple_spaces PASSED                             [100%]
   ```powershell
   git push -u origin main
   ```
-- [ ] **2. Project Settings:** Set visibility to **Public** at `https://gitlab.com/beyondnothing-group/beyondnothing-project/edit` (already configured).
-- [ ] **3. Labels:** Create `control-plane-approved` (green), `size-approved` (blue), and `agent-task` (purple) at `https://gitlab.com/beyondnothing-group/beyondnothing-project/-/labels`.
+- [ ] **2. Project Settings:** Set visibility to **Public** at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/edit` (already configured).
+- [ ] **3. Labels:** Create `control-plane-approved` (green), `size-approved` (blue), and `agent-task` (purple) at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/labels`.
 - [ ] **4. Flows:** In **AI > Flows**, create `airlock_triage` using the YAML in [`docs/flow_prompts.md`](file:///d:/gitlab%20transcend%20hackathon/docs/flow_prompts.md). Enable Developer and Fix Pipeline flows.
 - [ ] **5. Triggers:** In **AI > Triggers**, add the `@airlock_triage` comment trigger and the pipeline failure trigger.
 - [ ] **6. Recording:** Record the 3 demo scenarios (<3 minutes total) following the script in [`docs/SUBMISSION.md`](file:///d:/gitlab%20transcend%20hackathon/docs/SUBMISSION.md).
