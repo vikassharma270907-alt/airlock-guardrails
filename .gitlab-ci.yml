@@ -63,8 +63,8 @@ policy-gate:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - mkdir -p .trusted_tools
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/policy_gate.py" > .trusted_tools/policy_gate.py || cp tools/policy_gate.py .trusted_tools/policy_gate.py
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/policy_gate.py" > .trusted_tools/policy_gate.py || cp tools/policy_gate.py .trusted_tools/policy_gate.py'
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json'
     - python .trusted_tools/policy_gate.py
 
 sast-gate:
@@ -76,8 +76,8 @@ sast-gate:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - mkdir -p .trusted_tools
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/sast_gate.py" > .trusted_tools/sast_gate.py || cp tools/sast_gate.py .trusted_tools/sast_gate.py
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/sast_gate.py" > .trusted_tools/sast_gate.py || cp tools/sast_gate.py .trusted_tools/sast_gate.py'
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json'
     - python .trusted_tools/sast_gate.py
 
 fix-budget:
@@ -89,8 +89,8 @@ fix-budget:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   script:
     - mkdir -p .trusted_tools
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/fix_budget.py" > .trusted_tools/fix_budget.py || cp tools/fix_budget.py .trusted_tools/fix_budget.py
-    - git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/fix_budget.py" > .trusted_tools/fix_budget.py || cp tools/fix_budget.py .trusted_tools/fix_budget.py'
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json'
     - python .trusted_tools/fix_budget.py
 
 publish-staging:
@@ -99,8 +99,8 @@ publish-staging:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: staging
   script:
-    - W=$(ls dist/*.whl | head -n1)
-    - curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$W" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/$(basename $W)"
+    - 'W=$(ls dist/*.whl | head -n1)'
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$W" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/$(basename $W)"'
 
 smoke-test:
   extends: .ledger
@@ -108,9 +108,9 @@ smoke-test:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" -o airlock_demo-0.1-py3-none-any.whl "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/airlock_demo-0.1-py3-none-any.whl"
-    - pip install airlock_demo-0.1-py3-none-any.whl
-    - python -m airlock_demo --help
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" -o airlock_demo-0.1-py3-none-any.whl "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo/0.1.$CI_PIPELINE_IID/airlock_demo-0.1-py3-none-any.whl"'
+    - 'pip install airlock_demo-0.1-py3-none-any.whl'
+    - 'python -m airlock_demo --help'
 
 scorecard:
   stage: report
@@ -129,5 +129,6 @@ publish-production:
       when: manual
   environment: production
   script:
-    - W=$(ls dist/*.whl | head -n1)
-    - curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$W" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo-release/1.0.$CI_PIPELINE_IID/$(basename $W)"
+    - 'W=$(ls dist/*.whl | head -n1)'
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$W" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/airlock-demo-release/1.0.$CI_PIPELINE_IID/$(basename $W)"'
+
