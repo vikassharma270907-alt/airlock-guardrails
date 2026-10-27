@@ -13,10 +13,14 @@ include:
 
 variables:
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp, demo"
+  AST_ENABLE_MR_PIPELINES: 'true'
+  SECRET_DETECTION_ENABLED: 'true'
 
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 default:
@@ -109,6 +113,19 @@ regression-gate:
     when: always
     paths:
       - artifacts/
+
+state-guard:
+  extends: .ledger
+  stage: gate
+  variables:
+    GIT_DEPTH: '0'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - mkdir -p .trusted_tools
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/state_guard.py" > .trusted_tools/state_guard.py || cp tools/state_guard.py .trusted_tools/state_guard.py'
+    - python .trusted_tools/state_guard.py --self-test
 
 
 publish-staging:

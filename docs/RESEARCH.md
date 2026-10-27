@@ -58,3 +58,15 @@ Airlock translates empirical findings from software engineering and AI security 
 - **Core Finding**: Autonomous coding agents lack persistent organizational memory of past production outages and authorization flaws, frequently re-introducing vulnerabilities (e.g., Broken Object Level Authorization / BOLA) that the codebase previously survived. Relying on LLMs to synthesize arbitrary test code creates prompt injection risks and flaky execution.
 - **Airlock Implementation**: `tools/regression_gate.py` couples incident memory (`policy/incidents.json`) with cryptographic assessment binding (`head_sha`, `context_sha256`) and reviewed immutable test templates. Only reproduced failure assertions fail the pipeline; clean fixes pass the exact same test, achieving deterministic regression protection.
 
+---
+
+### 8. State Integrity, Precondition Completeness & Concurrency Tokens
+- **Source**: ReturnReady Guardian architectural pattern (GitLab Transcend Hackathon Showcase #43775292).
+- **Core Finding**: In autonomous task execution and agentic state management, agents suffer from "premature completion hallucination"—declaring tasks finished or marking items ready before prerequisite checks are satisfied. Furthermore, asynchronous and concurrent agent mutations suffer from race conditions and stale memory replay unless bound to deterministic optimistic concurrency tokens.
+- **Airlock Implementation**: `tools/state_guard.py` enforces:
+  1. **100% Checklist Verification Preconditions**: Tasks cannot advance to `ready` or terminal milestones without all itemized verification criteria marked complete.
+  2. **Terminal State Immutability**: Finished states (`dropped_off` / deployed) are locked against automated tampering.
+  3. **Optimistic Concurrency & TTL Tokens**: Mutations require matching `expected_version` and valid TTL tokens, rejecting stale state replays.
+  4. **CI Compute Optimization**: GitLab SAST/Secret Detection in MR pipelines via `AST_ENABLE_MR_PIPELINES: 'true'` paired with redundant branch pipeline suppression.
+
+

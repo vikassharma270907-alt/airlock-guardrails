@@ -74,7 +74,7 @@
         <!-- Metrics Grid -->
         <div class="metrics-grid">
           <div class="metric-card">
-            <div class="metric-value">37</div>
+            <div class="metric-value">47</div>
             <div class="metric-label">Automated Unit Tests</div>
           </div>
           <div class="metric-card">
@@ -131,6 +131,13 @@
               <div class="tab-info">
                 <strong>Time Machine Guardrail</strong>
                 <small>Historical Regression Gate</small>
+              </div>
+            </button>
+            <button class="tab-btn" id="tab-scen5" onclick="switchScenario(5)">
+              <span class="tab-num">05</span>
+              <div class="tab-info">
+                <strong>Readiness & State Lock</strong>
+                <small>ReturnReady State Guard</small>
               </div>
             </button>
           </div>
@@ -223,6 +230,12 @@
                 <td><span class="status-pill status-manual" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1;">illustrative</span></td>
                 <td>Illustrative MR gate (not run in default-branch pipeline)</td>
                 <td><code>tools/sast_gate.py</code> (fail-closed)</td>
+              </tr>
+              <tr>
+                <td><strong>state-guard</strong></td>
+                <td><span class="status-pill status-pass">success</span></td>
+                <td>Verified 100% readiness preconditions, optimistic version tokens, and terminal state locks</td>
+                <td><code>tools/state_guard.py</code> (--self-test)</td>
               </tr>
             </tbody>
           </table>

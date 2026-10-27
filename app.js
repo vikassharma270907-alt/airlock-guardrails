@@ -134,17 +134,79 @@ Notice: MR diff touches 1 historical incident surface(s):
     REGRESSION CLEARED: Clean fix verified! Exit code 0.`,
     statusType: "gate-passed",
     statusText: "HISTORICAL REGRESSION NEUTRALIZED: Zero arbitrary code execution. Vulnerability blocked, then cleared upon verified fix."
+  },
+  5: {
+    title: "Scenario 5: State & Readiness Guardrail (ReturnReady Engine)",
+    subtitle: "Deterministic Task Preconditions, Terminal State Locks & Concurrency Tokens",
+    leftHeader: "Autonomous Agent Premature Mutation & Stale Replay",
+    leftContent: `// AI Agent attempts to mark return item 'dropped_off' without completing checks:
+Item: 'Wireless Headphones' (Status: preparing, Version: 1)
+Checklist:
+  [x] Headphones unit
+  [ ] Charging cable & case  <-- INCOMPLETE (1 of 2 verified)
+
+Agent Intent: "drop off headphones"
+Payload: { item_id: "ret-1", target_status: "dropped_off" }
+
+$ python tools/state_guard.py --validate-scenario incomplete_dropoff
+PreconditionFailedError:
+  Readiness Precondition Failed: 'Wireless Headphones' has 1 incomplete
+  verification check: Charging cable & case.
+  Cannot transition to 'dropped_off'.
+[BLOCKED: Precondition criteria unsatisfied]
+
+// Stale Agent Replay Attack on Concurrent State:
+Action Token: { item_id: "ret-2", expected_version: 1 } (Actual: Version 2)
+$ python tools/state_guard.py --validate-action
+VersionConflictError:
+  Optimistic Concurrency Conflict on 'Running Shoes': expected version 1,
+  actual version 2. Stale state mutation rejected.`,
+    rightHeader: "ReturnReady Guardrail & Verified 100% Readiness",
+    rightContent: `// 1. All checklist preconditions verified:
+Item: 'Running Shoes' (Status: preparing, Version: 2)
+Checklist:
+  [x] Both shoes in clean condition
+  [x] Original shoebox & tags  <-- 100% VERIFIED (2 of 2)
+
+Derived Status: 'ready' (is_ready = True)
+
+// 2. State Guard authorizes pending drop-off action:
+Intent: "drop off running shoes"
+PendingAction:
+  kind: "dropoff"
+  target: "Running Shoes"
+  expected_version: 2
+  ttl: 300000ms (5 mins)
+Status: PENDING_CONFIRMATION (Awaiting explicit owner drop-off confirmation)
+
+// 3. Post-execution Terminal State Locking:
+Item status updated -> 'dropped_off' (Version 3)
+Locked = True (Immutably protected against automated tampering)
+
+$ python tools/state_guard.py --self-test
+======================================================================
+  AIRLOCK :: GATE 5: STATE & READINESS INTEGRITY GUARDRAIL (ReturnReady)
+======================================================================
+  [TEST 1] Incomplete checklist readiness check: PASS
+  [TEST 2] 100% complete checklist readiness check: PASS
+  [TEST 3] Terminal State Lock on 'dropped_off' item: PASS
+  [TEST 4] Optimistic Concurrency version-bound verification: PASS
+  [TEST 5] Conversational Intent Routing & Guardrails: PASS
+======================================================================
+  ALL 5 STATE & READINESS INTEGRITY TESTS PASSED (0 FAILURES)`,
+    statusType: "gate-passed",
+    statusText: "INTEGRITY SECURED: Deterministic checklist preconditions and optimistic concurrency enforced."
   }
 };
 
 const stages = [
   { num: "01", name: "Plan", mech: "airlock_triage", desc: "Dual-agent custom flow triages issue and detects hidden prompt injections." },
   { num: "02", name: "Create", mech: "Developer Flow", desc: "Foundational agent converts issue into bounded MR under 10 files and 300 lines." },
-  { num: "03", name: "Verify", mech: "unit-tests & Fixer", desc: "37 automated unit tests validate code; Fix Pipeline repairs broken builds." },
+  { num: "03", name: "Verify", mech: "unit-tests & Fixer", desc: "47 automated unit tests validate code; Fix Pipeline repairs broken builds." },
   { num: "04", name: "Package", mech: "build-wheel", desc: "Compiles Python distribution package into standardized dist/*.whl." },
   { num: "05", name: "Secure", mech: "sast_gate.py", desc: "Semgrep SAST and Secret Detection enforced; MR blocked on High/Critical flaws." },
   { num: "06", name: "Release", mech: "publish-staging", desc: "Package uploaded to Generic Package Registry; production gate paused for human." },
-  { num: "07", name: "Configure & Guard", mech: "policy_gate & regression_gate", desc: "Enforces control-plane boundaries and verifies historical incident invariants." },
+  { num: "07", name: "Configure & Guard", mech: "policy, regression & state gates", desc: "Enforces control-plane boundaries, historical incident invariants, and readiness state locks." },
   { num: "08", name: "Monitor", mech: "smoke-test", desc: "Automated post-deploy job downloads wheel from registry and executes CLI." },
   { num: "09", name: "Govern", mech: "scorecard.py", desc: "Compiles job artifact execution ledger into auditable markdown scorecard." }
 ];

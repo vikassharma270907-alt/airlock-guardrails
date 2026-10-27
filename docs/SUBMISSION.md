@@ -17,7 +17,9 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 2. **Deterministic Control-Plane Policy Gate**: Any Merge Request attempting to modify `.gitlab-ci.yml`, `.gitlab/*`, `tools/*`, `policy/*`, or delete test suites is blocked automatically unless a human explicitly applies the `control-plane-approved` label.
 3. **Verify-Twice Security Gate**: Security fixes are evaluated directly against re-scanned SAST and secret detection reports (`gl-*report.json`), failing the pipeline if High or Critical findings persist, regardless of whether unit tests pass.
 4. **Self-Healing CI with Bounded Retry**: Pipeline failures trigger the Fix CI/CD Pipeline flow, bounded by a 3-attempt ceiling to prevent credit exhaustion and runaway repair loops, followed by automated human escalation.
-5. **Continuous Governance Scorecard**: Every pipeline run records execution status into a per-job ledger artifact, compiling an auditable governance scorecard for compliance and visibility.
+5. **State & Readiness Integrity Guardrail**: Enforces 100% verified checklist criteria before tasks transition to "Ready" or terminal milestones, immutably locks completed state against automated agent tampering, and enforces version-bound optimistic concurrency tokens.
+6. **GitLab CI Pipeline Intelligence**: Employs `AST_ENABLE_MR_PIPELINES: 'true'` so security templates evaluate MR pipelines reliably, combined with redundant branch pipeline suppression (`$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS: when: never`) to save compute.
+7. **Continuous Governance Scorecard**: Every pipeline run records execution status into a per-job ledger artifact, compiling an auditable governance scorecard for compliance and visibility.
 
 ### DevSecOps Lifecycle Stages Touched
 - **Plan**: Custom flow `airlock_triage` on issue mention trigger parses requirements and flags prompt injection.

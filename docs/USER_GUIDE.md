@@ -32,6 +32,7 @@ sequenceDiagram
     CI->>CI: policy-gate checks: no CI edits, no deleted tests, size bounds
     CI->>CI: sast-gate checks: scanner re-verification (blocks High/Critical)
     CI->>CI: regression-gate checks: incident memory & deterministic test reproduction
+    CI->>CI: state-guard checks: 100% readiness criteria, state-locking & concurrency
     CI->>CI: fix-budget checks: retry attempts <= 3
     alt Policy Violation Detected
         CI-->>Human: Pipeline FAILS red; Human review & approval label required
@@ -50,7 +51,7 @@ sequenceDiagram
 2. The user tags `@airlock_triage` in the issue description or comment.
 3. The custom dual-agent flow analyzes the requirements and posts a verified triage note.
 4. The Duo Developer Agent takes the task, creates a branch, and submits a Merge Request.
-5. Deterministic CI runs all 37 unit tests and executes security analyzers.
+5. Deterministic CI runs all 47 unit tests and executes security analyzers.
 6. The human reviewer inspects the `scorecard.md` artifact generated directly on the MR widget and merges the code safely.
 
 #### B. The Attacked / Prompt Injection Workflow
@@ -81,7 +82,7 @@ sequenceDiagram
 
 Airlock can be verified and tested at four distinct levels:
 
-### Level 1: Full Local Unit Test Suite (37 Tests)
+### Level 1: Full Local Unit Test Suite (47 Tests)
 Run the full test suite locally without needing external network access or cloud credentials.
 
 ```bash
@@ -94,33 +95,11 @@ pytest -v
 
 **Output**:
 ```
-tests/test_gates.py::test_policy_gate_loads_defaults_on_missing_file PASSED
-tests/test_gates.py::test_policy_gate_blocks_control_plane_without_label PASSED
-tests/test_gates.py::test_policy_gate_allows_control_plane_with_label PASSED
-tests/test_gates.py::test_policy_gate_blocks_deleted_tests_under_dir_and_pattern PASSED
-tests/test_gates.py::test_policy_gate_enforces_size_limits PASSED
-tests/test_gates.py::test_policy_gate_blocks_renamed_protected_file PASSED
-tests/test_gates.py::test_policy_gate_blocks_renamed_test_file PASSED
-tests/test_gates.py::test_sast_gate_blocks_configured_severities PASSED
-tests/test_gates.py::test_sast_gate_passes_clean_report PASSED
-tests/test_gates.py::test_sast_gate_fails_with_no_reports PASSED
-tests/test_gates.py::test_sast_gate_fails_with_only_secret_detection_report PASSED
-tests/test_gates.py::test_sast_gate_passes_main_on_clean_report PASSED
-tests/test_gates.py::test_sast_gate_ignores_medium_fails_on_high PASSED
-tests/test_gates.py::test_is_human_applied_agent_applied PASSED
-tests/test_gates.py::test_is_human_applied_removed_label PASSED
-tests/test_gates.py::test_is_human_applied_out_of_order_events PASSED
-tests/test_gates.py::test_filter_human_labels_fail_closed_without_token PASSED
-tests/test_gates.py::test_fix_budget_allows_under_limit PASSED
-tests/test_gates.py::test_fix_budget_fails_when_limit_exceeded PASSED
-tests/test_gates.py::test_scorecard_with_commit_provenance PASSED
-tests/test_textkit.py::test_slugify_basic PASSED
-tests/test_textkit.py::test_slugify_special_characters PASSED
-tests/test_textkit.py::test_slugify_whitespace_and_hyphens PASSED
-tests/test_textkit.py::test_word_count_simple PASSED
-tests/test_textkit.py::test_word_count_empty PASSED
-tests/test_textkit.py::test_word_count_multiple_spaces PASSED
-============================== 26 passed in 0.16s ==============================
+tests/test_gates.py ....................                                 [ 42%]
+tests/test_regression_gate.py ...........                               [ 65%]
+tests/test_state_guard.py ...........                                   [ 87%]
+tests/test_textkit.py ......                                            [100%]
+============================== 47 passed in 0.14s ==============================
 ```
 
 ---
@@ -138,6 +117,12 @@ python tools/sast_gate.py
 # Test the fix budget retry limiter:
 python tools/fix_budget.py
 
+# Test the regression gate (Time Machine):
+python tools/regression_gate.py --self-test
+
+# Test the State & Readiness Guardrail (ReturnReady):
+python tools/state_guard.py --self-test
+
 # Generate the pipeline scorecard artifact:
 python tools/scorecard.py
 cat scorecard.md
@@ -150,6 +135,8 @@ Open `index.html` in any modern web browser or visit your deployed web showcase.
 - **Scenario 1: Prompt Injection Neutralization** (Inspect input issue vs sanitized JSON and warning).
 - **Scenario 2: SAST Re-Verification** (Demonstrates why passing unit tests alone fails the MR when High-severity `eval()` is detected).
 - **Scenario 3: Control-Plane Protection** (Demonstrates agent attempting to delete unit tests in `.gitlab-ci.yml` and getting blocked with `POLICY VIOLATION`).
+- **Scenario 4: Time Machine Historical Incident Guardrail** (Demonstrates incident memory grounding and deterministic regression reproduction).
+- **Scenario 5: State & Readiness Guardrail** (Demonstrates ReturnReady checklist verification preconditions and terminal state locking).
 
 ---
 

@@ -107,7 +107,21 @@ Copy-Item demo/seeds/legacy_runner.py.txt airlock_demo/legacy_runner.py
 
 ---
 
-### Phase 5: Staging, Smoke Test & Production Governance (2:15 - 2:45)
+### Scenario 5: Readiness & State-Locking Guardrail (ReturnReady Engine)
+
+**1. Context:**
+* Autonomous AI agents often claim tasks are complete or transition milestones to "Ready" or "Shipped" before satisfying all required packaging/verification checklists. Furthermore, concurrent or stale agent actions can overwrite newer updates.
+* ReturnReady State Guard enforces deterministic 100% checklist verification, version-bound optimistic concurrency tokens, and terminal state immutability.
+
+**2. Expected Behavior:**
+* **Incomplete Checklist Run:** An AI agent attempts to transition an item (e.g. `Wireless Headphones`) to `dropped_off` while packaging checks remain incomplete (1/2 checked). `state_guard.py` raises `PreconditionFailedError`, halting the action with exit code 1.
+* **Terminal Immutability Run:** An agent attempts to mutate an item already in terminal state `dropped_off`. `state_guard.py` raises `StateLockedError`, protecting finished state from autonomous tampering.
+* **Concurrency Conflict Run:** An agent passes stale version 1 when the resource has advanced to version 2. `state_guard.py` raises `VersionConflictError`, rejecting stale replay attacks.
+* **Verified Readiness Run:** All checklist preconditions are 100% verified (2/2 checked). `state_guard.py` authorizes the transition and advances version safely.
+
+---
+
+### Phase 6: Staging, Smoke Test & Production Governance (2:15 - 2:45)
 - Merge approved feature MR into `main`.
 - `build-wheel` compiles wheel into `dist/`.
 - `publish-staging` pushes package to GitLab Generic Package Registry.
