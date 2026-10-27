@@ -2,6 +2,10 @@
 
 > **Autonomous agents that can ship, but cannot break the rules.**
 
+[![Watch Demo Video](https://img.shields.io/badge/YouTube-Official%20Demo%20Video%20(2:42)-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=jFqkEme0DG8)
+[![Live Playground](https://img.shields.io/badge/Vercel-Live%20Web%20Playground-black?style=for-the-badge&logo=vercel)](https://airlock-guardrails.vercel.app/#playground)
+[![GitLab Showcase](https://img.shields.io/badge/GitLab-Showcase%20Repository-fc6d26?style=for-the-badge&logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase)
+
 Airlock introduces deterministic continuous integration guardrails and dual-agent governance for AI coding agents on the GitLab Duo Agent Platform. Instead of relying purely on system prompts to keep agents safe, Airlock enforces programmatic boundaries in the CI/CD pipeline: untrusted issue text is handled via a reader/writer agent split, control-plane configurations (.gitlab-ci.yml, tools, test suites) cannot be modified without explicit human approval labels, and security fixes must be verified by re-scanning, not by tests alone.
 
 ---
@@ -193,6 +197,8 @@ Citations were not independently verified in full; see each paper.
 ---
 
 ## Submission Links
+- **Official YouTube Demo Video (2:42)**: [https://www.youtube.com/watch?v=jFqkEme0DG8](https://www.youtube.com/watch?v=jFqkEme0DG8)
+- **Live Interactive Web Playground**: [https://airlock-guardrails.vercel.app](https://airlock-guardrails.vercel.app)
 - **Canonical GitLab Project (Submission)**: [https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase)
 - **GitHub Repository (Public Mirror)**: [https://github.com/vikassharma270907-alt/airlock-guardrails](https://github.com/vikassharma270907-alt/airlock-guardrails)
 

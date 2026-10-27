@@ -317,13 +317,15 @@ tests/test_triage.py (6 tests: injection detection, HTML override, writer format
 
 ## 9. Final Pre-Submission Execution Checklist
 
-- [ ] **1. Push Local Code to GitLab:**
+- [x] **1. Push Local Code to GitLab & GitHub:**
   ```powershell
   git push -u origin main
+  git push -u github main
+  git push -u hackathon main
   ```
-- [ ] **2. Project Settings:** Set visibility to **Public** at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/edit` (already configured).
-- [ ] **3. Labels:** Create `control-plane-approved` (green), `size-approved` (blue), and `agent-task` (purple) at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/labels`.
-- [ ] **4. Flows:** In **AI > Flows**, create `airlock_triage` using the YAML in [`docs/flow_prompts.md`](file:///d:/gitlab%20transcend%20hackathon/docs/flow_prompts.md). Enable Developer and Fix Pipeline flows.
-- [ ] **5. Triggers:** In **AI > Triggers**, add the `@airlock_triage` comment trigger and the pipeline failure trigger.
-- [ ] **6. Recording:** Record the 3 demo scenarios (<3 minutes total) following the script in [`docs/SUBMISSION.md`](file:///d:/gitlab%20transcend%20hackathon/docs/SUBMISSION.md).
-- [ ] **7. Upload & Submit:** Upload video to YouTube as **Public** and complete the Devpost submission before **Tuesday Oct 27, 13:00 UTC (18:30 IST)**.
+- [x] **2. Project Settings:** Set visibility to **Public** at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/edit` (verified configured).
+- [x] **3. Labels:** Created `control-plane-approved` (green), `size-approved` (blue), and `agent-task` (purple) at `https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/labels`.
+- [x] **4. Flows:** In **AI > Flows**, created `airlock_triage` using the YAML in [`docs/flow_prompts.md`](file:///d:/gitlab%20transcend%20hackathon/docs/flow_prompts.md). Enabled Developer and Fix Pipeline flows.
+- [x] **5. Triggers:** In **AI > Triggers**, added the `@airlock_triage` comment trigger and the pipeline failure trigger.
+- [x] **6. Recording:** Recorded demo showcase (2:42 total) following the script in [`docs/SUBMISSION.md`](file:///d:/gitlab%20transcend%20hackathon/docs/SUBMISSION.md) and [`docs/DEMO_VIDEO_PACKAGE.md`](file:///d:/gitlab%20transcend%20hackathon/docs/DEMO_VIDEO_PACKAGE.md).
+- [x] **7. Upload & Submit:** Uploaded video to YouTube as **Public** (`https://www.youtube.com/watch?v=jFqkEme0DG8`), updated live web dashboard at `https://airlock-guardrails.vercel.app`, and finalized Devpost submission package.

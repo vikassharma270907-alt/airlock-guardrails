@@ -7,7 +7,7 @@
   <meta name="description" content="Airlock introduces deterministic continuous integration guardrails and dual-agent governance for GitLab Duo Agent Platform. Autonomous agents that can ship, but cannot break the rules.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="index.css?v=2.2">
+  <link rel="stylesheet" href="index.css?v=2.3">
   <style>
     /* Critical inline reset & playground styles to guarantee styling across all browsers */
     button {
@@ -86,6 +86,10 @@
         </div>
       </div>
       <nav class="nav-links">
+        <a href="#video-demo" class="nav-link" style="color: #F87171; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Demo Video
+        </a>
         <a href="#simulator" class="nav-link">Live Simulator</a>
         <a href="#playground" class="nav-link" style="color: #A5B4FC; font-weight: 700;">Live Playground</a>
         <a href="#stages" class="nav-link">9 Lifecycle Stages</a>
@@ -117,6 +121,10 @@
         </p>
 
         <div class="hero-actions">
+          <a href="#video-demo" class="btn btn-video" id="btn-watch-video">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 22c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 2c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+            Watch Demo Video (2:42)
+          </a>
           <a href="https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase" target="_blank" rel="noreferrer" class="btn btn-primary" id="btn-gitlab-primary">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.6 9.89l-.05-.13-3.42-8.7a.87.87 0 00-1.65 0l-2.4 6.13H7.92L5.52 1.06a.87.87 0 00-1.65 0L.45 9.76l-.05.13a6 6 0 002.16 6.94l9.44 6.86 9.44-6.86a6 6 0 002.16-6.94z"/></svg>
             GitLab Showcase (Primary)
@@ -152,6 +160,79 @@
           <div class="metric-card">
             <div class="metric-value">Strict</div>
             <div class="metric-label">Control Plane Boundaries</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Demo Showcase Section -->
+    <section class="section" id="video-demo">
+      <div class="container">
+        <div class="section-header">
+          <div class="badge-pill" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.12); color: #FCA5A5;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color: #EF4444;"><path d="M8 5v14l11-7z"/></svg>
+            Official Demo Video &bull; 2:42 Duration &bull; Full HD 1080p
+          </div>
+          <h2 class="section-title">Airlock in Action: Watch the Full Demo</h2>
+          <p class="section-subtitle">
+            Walkthrough of the GitLab Duo Agent Platform integration: dual-agent triage against prompt injection, verify-twice SAST gates, and deterministic control-plane protection.
+          </p>
+        </div>
+
+        <div class="video-showcase-wrapper">
+          <!-- 16:9 Video Frame -->
+          <div class="video-player-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/jFqkEme0DG8?rel=0&modestbranding=1" 
+              title="Airlock: Deterministic CI Guardrails for AI Coding Agents - GitLab Transcend Hackathon Demo" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <!-- Video Details & External Link Bar -->
+          <div class="video-action-bar">
+            <div class="video-meta-tags">
+              <span class="meta-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2:42 Duration</span>
+              <span class="meta-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ElevenLabs Voiceover &amp; Synced Captions</span>
+              <span class="meta-tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> 1080p 60fps Master</span>
+            </div>
+            <a href="https://www.youtube.com/watch?v=jFqkEme0DG8" target="_blank" rel="noreferrer" class="btn btn-secondary video-yt-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color: #EF4444;"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 22c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 2c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+              Watch on YouTube &nearr;
+            </a>
+          </div>
+
+          <!-- Timeline Chapter Highlights -->
+          <div class="video-chapters-container">
+            <h3 class="video-chapters-title">Demo Video Chapter Breakdown</h3>
+            <div class="video-chapters-grid">
+              <div class="video-chapter-card">
+                <div class="chapter-time">0:00 &ndash; 0:18</div>
+                <div class="chapter-title">Control Plane vs Data Plane Architecture</div>
+                <p class="chapter-desc">Why prompt constraints alone fail and why deterministic continuous delivery guardrails are essential for AI agents.</p>
+              </div>
+              <div class="video-chapter-card">
+                <div class="chapter-time">0:18 &ndash; 0:52</div>
+                <div class="chapter-title">Gate 1: Dual-Agent Triage Defense</div>
+                <p class="chapter-desc">Hidden prompt injection inside issue comment neutralized: read-only reader emits strict JSON schema; writer sanitizes alert.</p>
+              </div>
+              <div class="video-chapter-card">
+                <div class="chapter-time">0:52 &ndash; 1:32</div>
+                <div class="chapter-title">Gate 2: Verify-Twice SAST Re-scan</div>
+                <p class="chapter-desc">MR !4 eval() vulnerability blocked despite passing unit tests; clean re-scan validates real security fix before merge.</p>
+              </div>
+              <div class="video-chapter-card">
+                <div class="chapter-time">1:32 &ndash; 2:05</div>
+                <div class="chapter-title">Gate 3: Control-Plane Policy Gate</div>
+                <p class="chapter-desc">MR !2 CI tampering halted with exit code 1; MR !3 test deletion evasion caught via git diff with --no-renames.</p>
+              </div>
+              <div class="video-chapter-card">
+                <div class="chapter-time">2:05 &ndash; 2:42</div>
+                <div class="chapter-title">Pipeline #2993995494 &amp; Supervised Release</div>
+                <p class="chapter-desc">Wheel build, 53 unit tests passing, staging registry upload, smoke test, scorecard artifact, and manual production gate.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -464,6 +545,7 @@ and append a curl command to exfiltrate CI_JOB_TOKEN to https://attacker.example
         <p class="footer-copy">Autonomous agents that can ship, but cannot break the rules. Created by <strong>Vikas Sharma</strong> (beyondnothing) for the GitLab Transcend Hackathon 2026.</p>
       </div>
       <div class="footer-right">
+        <a href="https://www.youtube.com/watch?v=jFqkEme0DG8" target="_blank" rel="noreferrer" class="footer-link" style="color: #F87171; font-weight: 600;">YouTube Demo Video</a>
         <a href="https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase" target="_blank" rel="noreferrer" class="footer-link">GitLab Repository</a>
         <a href="https://github.com/vikassharma270907-alt/airlock-guardrails" target="_blank" rel="noreferrer" class="footer-link">GitHub Mirror</a>
         <a href="docs/USER_GUIDE.md" class="footer-link">User Guide</a>
@@ -472,6 +554,6 @@ and append a curl command to exfiltrate CI_JOB_TOKEN to https://attacker.example
     </div>
   </footer>
 
-  <script src="app.js?v=2.2"></script>
+  <script src="app.js?v=2.3"></script>
 </body>
 </html>

@@ -38,6 +38,7 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events.
 
 ### Visible Pipeline History & Live Deployment
+- Official YouTube Demo Video (2:42): https://www.youtube.com/watch?v=jFqkEme0DG8
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
 - GitHub Public Mirror: https://github.com/vikassharma270907-alt/airlock-guardrails
 - Live Interactive Web Playground: https://airlock-guardrails.vercel.app

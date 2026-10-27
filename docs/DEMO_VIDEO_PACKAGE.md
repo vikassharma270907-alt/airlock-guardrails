@@ -45,6 +45,7 @@ See `docs/airlock_demo.srt`.
 
 ## 4. Metadata
 
+- **Published YouTube Video**: https://www.youtube.com/watch?v=jFqkEme0DG8
 - **YouTube Title**: Airlock: Deterministic CI Guardrails for AI Coding Agents (GitLab Transcend Hackathon)
 - **Tagline**: Autonomous agents that can ship, but cannot break the rules.
 - **Track**: Path A (Start Fresh) | Autonomy: Supervised
