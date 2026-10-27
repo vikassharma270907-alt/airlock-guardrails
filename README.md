@@ -170,8 +170,15 @@ Citations were not independently verified in full; see each paper.
 
 ---
 
+## Project Owner & Creator
+- **Creator & Project Lead**: **Vikas Sharma** ([@beyondnothing01](https://gitlab.com/beyondnothing01))
+- **Email**: [beyondnothing01@gmail.com](mailto:beyondnothing01@gmail.com)
+
+---
+
 ## Submission Links
 - **Canonical GitLab Project (Submission)**: [https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase)
+- **GitHub Repository (Public Mirror)**: [https://github.com/vikassharma270907-alt/airlock-guardrails](https://github.com/vikassharma270907-alt/airlock-guardrails)
 
 ---
 

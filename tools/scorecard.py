@@ -74,9 +74,9 @@ def classify_commits(commits_list=None, config_path="policy/policy.json"):
             human_count += 1
 
         author_display = c.get("author", "unknown")
-        # Sanitize personal account names or raw handles for clean project scorecard presentation
-        if author_display.endswith("-alt") or "@" in author_display or "01" in author_display:
-            author_display = "Human Maintainer"
+        # Attribute project commits to owner: Vikas Sharma
+        if any(t in author_display.lower() for t in ("vikas", "beyondnothing", "-alt", "airlock maintainer")):
+            author_display = "Vikas Sharma (Owner)"
 
         classified.append({
             "hash": c.get("hash", "HEAD"),
