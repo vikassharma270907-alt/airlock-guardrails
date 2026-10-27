@@ -273,11 +273,17 @@ function renderStages() {
   `).join('');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   switchScenario(1);
   renderStages();
-  switchPlaygroundTab('triage');
-});
+  runPlaygroundTriage();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // ============================================================================
 // Live Interactive Playground Logic
