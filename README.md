@@ -68,8 +68,16 @@ The table below reflects current verification status. Stages with live CI job ru
 # Install test dependencies (only pytest)
 pip install -r requirements-dev.txt
 
-# Run full test suite (47 unit tests)
+# Run full test suite (53 unit tests)
 pytest -v
+
+# 1. Interactive Terminal Console (Live User Input):
+python interactive.py
+# (or python main.py --cli)
+
+# 2. Interactive Web Dashboard & Playground:
+python main.py
+# Open http://localhost:3000/#playground in your browser
 ```
 
 ### GitLab CI Execution

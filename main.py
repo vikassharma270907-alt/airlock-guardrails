@@ -42,8 +42,15 @@ def app(environ, start_response):
 
 
 if __name__ == "__main__":
-    from wsgiref.simple_server import make_server
+    import sys
 
-    print("Airlock Dashboard serving on http://localhost:3000 ...")
-    server = make_server("0.0.0.0", 3000, app)
-    server.serve_forever()
+    if "--cli" in sys.argv or "-i" in sys.argv or "--interactive" in sys.argv:
+        from interactive import main as run_cli
+        run_cli()
+    else:
+        from wsgiref.simple_server import make_server
+
+        print("Airlock Dashboard serving on http://localhost:3000 ...")
+        print("Tip: Run 'python main.py --cli' or 'python interactive.py' for interactive terminal mode.")
+        server = make_server("0.0.0.0", 3000, app)
+        server.serve_forever()

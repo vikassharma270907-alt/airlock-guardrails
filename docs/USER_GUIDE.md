@@ -82,7 +82,7 @@ sequenceDiagram
 
 Airlock can be verified and tested at four distinct levels:
 
-### Level 1: Full Local Unit Test Suite (47 Tests)
+### Level 1: Full Local Unit Test Suite (53 Tests)
 Run the full test suite locally without needing external network access or cloud credentials.
 
 ```bash
@@ -95,11 +95,12 @@ pytest -v
 
 **Output**:
 ```
-tests/test_gates.py ....................                                 [ 42%]
-tests/test_regression_gate.py ...........                               [ 65%]
-tests/test_state_guard.py ...........                                   [ 87%]
-tests/test_textkit.py ......                                            [100%]
-============================== 47 passed in 0.14s ==============================
+tests/test_gates.py ....................                                 [ 37%]
+tests/test_regression_gate.py ...........                               [ 58%]
+tests/test_state_guard.py ...........                                   [ 77%]
+tests/test_textkit.py ......                                            [ 88%]
+tests/test_triage.py ......                                             [100%]
+============================== 53 passed in 0.09s ==============================
 ```
 
 ---
@@ -108,6 +109,9 @@ tests/test_textkit.py ......                                            [100%]
 You can execute each gatekeeper tool directly in PowerShell or Bash:
 
 ```bash
+# Test the dual-agent triage and prompt injection detector:
+python tools/triage.py demo/attack_issue.md
+
 # Test the control-plane policy gate:
 python tools/policy_gate.py
 
@@ -130,13 +134,30 @@ cat scorecard.md
 
 ---
 
-### Level 3: Interactive Browser Simulator (`index.html`)
-Open `index.html` in any modern web browser or visit your deployed web showcase. The simulator allows interactive walk-throughs of:
-- **Scenario 1: Prompt Injection Neutralization** (Inspect input issue vs sanitized JSON and warning).
-- **Scenario 2: SAST Re-Verification** (Demonstrates why passing unit tests alone fails the MR when High-severity `eval()` is detected).
-- **Scenario 3: Control-Plane Protection** (Demonstrates agent attempting to delete unit tests in `.gitlab-ci.yml` and getting blocked with `POLICY VIOLATION`).
-- **Scenario 4: Time Machine Historical Incident Guardrail** (Demonstrates incident memory grounding and deterministic regression reproduction).
-- **Scenario 5: State & Readiness Guardrail** (Demonstrates ReturnReady checklist verification preconditions and terminal state locking).
+### Level 2b: Interactive Terminal Console (User Input Shell)
+Airlock provides an interactive command-line shell allowing anyone to enter custom inputs and test our guardrails live:
+
+```bash
+python interactive.py
+# or:
+python main.py --cli
+```
+Features:
+- **Mode 1**: Type or paste any custom issue or prompt injection attack; see Reader JSON and Writer note live.
+- **Mode 2**: Enter conversational errand/return utterances; test checklist completeness and terminal state locking.
+- **Mode 3**: Enter modified files and line counts; test CI control-plane policy gate enforcement.
+- **Mode 4**: Enter text strings to test TextKit slugification and word counts.
+- **Mode 5**: Run full automated test suite directly from the console.
+
+---
+
+### Level 3: Interactive Web Showcase & Live Playground (`index.html`)
+Open `index.html` in any browser or run `python main.py` (serving on `http://localhost:3000`):
+1. **Interactive Guardrail Simulator (`#simulator`)**:
+   - Walks through 5 pre-configured scenarios (Prompt Injection Defense, SAST Re-Verification, Control Plane Tampering Blocked, Time Machine Regression Gate, and ReturnReady State Guard).
+2. **Live Interactive Playground (`#playground`)**:
+   - Allows users and evaluators to **type their own custom inputs** directly in the browser!
+   - Test custom prompt injection payloads, test errand state transitions, simulate merge request file modifications, and run TextKit utilities with instant visual feedback.
 
 ---
 
