@@ -1,0 +1,13 @@
+# Open Source Notices and Attributions
+
+This project incorporates architectural concepts inspired by open source projects developed during the GitLab Transcend Hackathon (October 2026):
+
+1. **Time Machine CI Pattern** (GitLab Transcend Showcase #43742192):
+   - Historical regression memory and deterministic incident reproduction concepts.
+   - Original open-source work licensed under the MIT License.
+
+2. **ReturnReady Guardian Pattern** (GitLab Transcend Showcase #43775292):
+   - Readiness checklist verification preconditions, terminal state locking, and optimistic concurrency tokens.
+   - Original open-source work licensed under the MIT License.
+
+All code and guardrail implementations in this repository are published under the MIT License by Vikas Sharma (beyondnothing).

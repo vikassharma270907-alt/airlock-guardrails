@@ -33,9 +33,9 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - **Govern**: Deterministic policy enforcement, human approval labels, and automated scorecard artifact generation.
 
 ### GitLab Duo Agent Platform Features Used
-- **Custom Flows**: Flow Registry v1 dual-agent flow (`airlock_triage`) separating read-only analysis from write-only actions.
-- **Foundational Flows**: GitLab Duo Developer Flow, Fix CI/CD Pipeline Flow, and Code Review Flow [TO VERIFY: instance flow availability].
-- **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events [TO VERIFY: automatic trigger on tier vs manual widget click].
+- **Custom Flows**: Flow Registry v1 dual-agent flow (`airlock_triage`) separating read-only analysis from write-only actions, plus Time Machine regression flow (`airlock_historical_regression`).
+- **Foundational Flows**: GitLab Duo Developer Flow, Fix CI/CD Pipeline Flow, and Code Review Flow.
+- **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events.
 
 ### Visible Pipeline History & Live Deployment
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
