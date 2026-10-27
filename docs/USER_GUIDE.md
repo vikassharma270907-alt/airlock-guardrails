@@ -31,6 +31,7 @@ sequenceDiagram
     Agent->>CI: Opens Merge Request
     CI->>CI: policy-gate checks: no CI edits, no deleted tests, size bounds
     CI->>CI: sast-gate checks: scanner re-verification (blocks High/Critical)
+    CI->>CI: regression-gate checks: incident memory & deterministic test reproduction
     CI->>CI: fix-budget checks: retry attempts <= 3
     alt Policy Violation Detected
         CI-->>Human: Pipeline FAILS red; Human review & approval label required
@@ -49,7 +50,7 @@ sequenceDiagram
 2. The user tags `@airlock_triage` in the issue description or comment.
 3. The custom dual-agent flow analyzes the requirements and posts a verified triage note.
 4. The Duo Developer Agent takes the task, creates a branch, and submits a Merge Request.
-5. Deterministic CI runs all 26 unit tests and executes security analyzers.
+5. Deterministic CI runs all 37 unit tests and executes security analyzers.
 6. The human reviewer inspects the `scorecard.md` artifact generated directly on the MR widget and merges the code safely.
 
 #### B. The Attacked / Prompt Injection Workflow
@@ -67,13 +68,20 @@ sequenceDiagram
 4. If the agent fixes the failure within 3 attempts, CI goes green.
 5. If the agent fails 3 times, the budget counter halts the pipeline with `ESCALATE TO HUMAN`, preventing credit exhaustion or recursive degradation loops.
 
+#### D. The Historical Regression Prevention Workflow (Time Machine Guardrail)
+1. An agent proposes a feature touching an area previously vulnerable to authorization bypass or remote execution.
+2. `regression_gate.py` detects that the MR diff matches an incident in `policy/incidents.json`.
+3. The Duo Historical Investigator analyzes the invariant and generates a structured assessment packet.
+4. The regression gate validates the assessment cryptographically and executes the reviewed test template in an isolated runner.
+5. If the vulnerability is reproduced, CI fails with exit code 1 (`reproduced`). Once the fix is applied, the exact same test passes (`cleared`) with exit code 0!
+
 ---
 
 ## 2. Project Details for Testing
 
 Airlock can be verified and tested at four distinct levels:
 
-### Level 1: Full Local Unit Test Suite (26 Tests)
+### Level 1: Full Local Unit Test Suite (37 Tests)
 Run the full test suite locally without needing external network access or cloud credentials.
 
 ```bash

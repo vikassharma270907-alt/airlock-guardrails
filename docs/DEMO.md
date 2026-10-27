@@ -93,7 +93,21 @@ Copy-Item demo/seeds/legacy_runner.py.txt airlock_demo/legacy_runner.py
 
 ---
 
-### Phase 4: Staging, Smoke Test & Production Governance (2:15 - 2:45)
+### Scenario 4: Historical Regression Blocked & Cleared (Time Machine CI)
+
+**1. Context:**
+* An MR introduces code in an area with a known historical vulnerability recorded in `policy/incidents.json` (e.g. Broken Object Level Authorization on `/notes/{note_id}/export`).
+* The Duo Historical Regression flow evaluates the MR diff against historical invariants.
+
+**2. Expected Behavior:**
+* `regression-gate` detects that the MR changes touch historical incident surfaces.
+* Upon receiving a suspected investigation assessment, `regression-gate` generates the immutable reviewed test template `test_tmci_cross_user_export_denied`.
+* **Vulnerable MR Run:** The assertion `TMCI_AUTH_ASSERT` fails because unauthorized user Bob accessed Alice's note. The pipeline fails with exit code 1 (`reproduced`), blocking merge!
+* **Remediated MR Run:** The developer/agent adds the required ownership check (`if note.owner != user: raise 404`). The exact same test passes (`cleared`), turning `regression-gate` green!
+
+---
+
+### Phase 5: Staging, Smoke Test & Production Governance (2:15 - 2:45)
 - Merge approved feature MR into `main`.
 - `build-wheel` compiles wheel into `dist/`.
 - `publish-staging` pushes package to GitLab Generic Package Registry.

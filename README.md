@@ -18,7 +18,7 @@ The table below reflects current verification status. Stages with live CI job ru
 | **Package** | CI `build-wheel` | Audits build logs | Standardized wheel packaged into `dist/` | Verified ([Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028)) |
 | **Secure** | SAST (`semgrep-sast`), Secret Detection, `sast-gate` | Security audit | `sast_gate.py` fails closed; requires scanner report and blocks High/Critical | Verified (scanner in #2989694028; MR gate in [Pipeline #2989715383](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989715383)) |
 | **Release** | `publish-staging` & `publish-production` | **Manual Approval** for prod | Staging package published automatically; production requires human click | staging published; production is a manual job, pending human approval ([Pipeline #2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028)) |
-| **Configure** | CI `policy-gate` | Applies `control-plane-approved` | `policy_gate.py` blocks edits to `.gitlab-ci.yml`, `tools/`, or configs | Verified ([MR !2 Pipeline #2989716535](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535) & [MR !3 Pipeline #2989719601](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601)) |
+| **Configure & Guard** | CI `policy-gate` & `regression-gate` | Applies `control-plane-approved` / Reviews incident invariants | `policy_gate.py` blocks edits to `.gitlab-ci.yml`, `tools/`, or configs; `regression_gate.py` verifies historical incident memory and blocks regressions | Verified ([MR !2 Pipeline #2989716535](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535) & [MR !3 Pipeline #2989719601](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601)) |
 | **Monitor** | CI `smoke-test` | Reviews test report | Installs wheel from Generic Package Registry and executes CLI | smoke-test job verified in Pipeline [#2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028) |
 | **Govern** | CI `scorecard` & `ledger` | Reviews audit scorecard | Ledger tracks each job result; markdown scorecard generated per run | scorecard job verified in Pipeline [#2989694028](https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028) |
 
@@ -41,7 +41,14 @@ The table below reflects current verification status. Stages with live CI job ru
    - Requires `gl-sast-report.json` to exist (fails closed if scans were omitted or reports are missing).
    - Blocks the pipeline if any High or Critical finding exists. Passing unit tests alone will not allow an un-remediated security vulnerability into the codebase.
 
-4. **Self-Healing CI with 3-Attempt Cap**:
+4. **Time Machine Historical Regression Guardrail (`tools/regression_gate.py`)**:
+   - *Architecture integrated from Time Machine CI (Transcend Showcase #43742192).*
+   - Maintains an auditable incident memory (`policy/incidents.json`) of historical vulnerabilities (BOLA/IDOR authorization bypass, unsafe eval, path traversal).
+   - Automatically cross-references MR diff symbols and routes against historical failure surfaces.
+   - Strictly validates model investigation assessments with zero arbitrary model code execution (verifying `head_sha`, `context_sha256`, and reviewed immutable test templates).
+   - Generates deterministic regression tests in CI; reproduces vulnerabilities to block merge (`reproduced` -> exit code 1), and clears upon verified fix (`cleared` -> exit code 0).
+
+5. **Self-Healing CI with 3-Attempt Cap**:
    - Pipeline failures trigger the Fix CI/CD Pipeline flow.
    - Remediation attempts are capped at 3 to prevent credit exhaustion or recursive degradation, followed by a human handoff.
 
@@ -54,7 +61,7 @@ The table below reflects current verification status. Stages with live CI job ru
 # Install test dependencies (only pytest)
 pip install -r requirements-dev.txt
 
-# Run full test suite (26 unit tests)
+# Run full test suite (37 unit tests)
 pytest -v
 ```
 

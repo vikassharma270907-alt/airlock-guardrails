@@ -50,3 +50,11 @@ Airlock translates empirical findings from software engineering and AI security 
 - **Source**: Ehsani et al., *"Where Do AI Coding Agents Fail? An Empirical Study of Failed Agentic Pull Requests in GitHub"* (arXiv 2601.15195).
 - **Core Finding**: In an empirical analysis of 33,596 agent-generated PRs, rejected PRs were significantly larger, modified more files, and experienced higher rates of CI failure; duplicates and abandonment were common.
 - **Airlock Implementation**: The policy gate enforces a size budget (maximum 10 files and 300 changed lines), requiring human authorization (`size-approved`) for larger MRs.
+
+---
+
+### 7. Historical Regression Memory & Deterministic Test Reproduction
+- **Source**: Time Machine CI architectural pattern (GitLab Transcend Hackathon Showcase #43742192).
+- **Core Finding**: Autonomous coding agents lack persistent organizational memory of past production outages and authorization flaws, frequently re-introducing vulnerabilities (e.g., Broken Object Level Authorization / BOLA) that the codebase previously survived. Relying on LLMs to synthesize arbitrary test code creates prompt injection risks and flaky execution.
+- **Airlock Implementation**: `tools/regression_gate.py` couples incident memory (`policy/incidents.json`) with cryptographic assessment binding (`head_sha`, `context_sha256`) and reviewed immutable test templates. Only reproduced failure assertions fail the pipeline; clean fixes pass the exact same test, achieving deterministic regression protection.
+

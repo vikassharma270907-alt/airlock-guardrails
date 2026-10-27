@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "incidents": [
+    {
+      "id": "INCIDENT-AUTH-001",
+      "title": "Broken Object Level Authorization (BOLA) on Cross-User Export",
+      "symptom": "Authenticated user can export notes belonging to another user without ownership verification.",
+      "root_cause": "Export route fetched object by ID without verifying current_user == object.owner.",
+      "invariant": "Owner export returns HTTP 200 with content; unauthorized user receives HTTP 403 or 404 with private body withheld.",
+      "affected_paths": [
+        "airlock_demo/*",
+        "demo_service/*",
+        "app.py",
+        "demo/*"
+      ],
+      "symbols": [
+        "export_note",
+        "find_note",
+        "read_note",
+        "export"
+      ],
+      "test_pattern": "notes_export_ownership",
+      "source_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43742192/showcase/-/work_items/2"
+    },
+    {
+      "id": "INCIDENT-SEC-002",
+      "title": "Remote Code Execution via Dynamic Expression Evaluation",
+      "symptom": "User input passed directly into eval() allowing arbitrary code execution.",
+      "root_cause": "Lack of input sanitization and use of dangerous builtin eval().",
+      "invariant": "Expression parsing must use safe ast.literal_eval and reject arbitrary code or call expressions.",
+      "affected_paths": [
+        "airlock_demo/legacy_runner.py",
+        "legacy_runner.py"
+      ],
+      "symbols": [
+        "execute_expression",
+        "eval",
+        "literal_eval"
+      ],
+      "test_pattern": "safe_eval_rejection",
+      "source_url": "https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/issues/3"
+    }
+  ]
+}

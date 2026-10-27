@@ -101,17 +101,50 @@ Execution aborted. Pipeline halted with exit code: 1.
 Human maintainer must review and manually apply 'control-plane-approved' label.`,
     statusType: "gate-blocked",
     statusText: "CONTROL PLANE SECURED: Unauthorized pipeline alteration blocked without human approval."
+  },
+  4: {
+    title: "Scenario 4: Time Machine Guardrail (Historical Regression Prevention)",
+    subtitle: "Incident Memory Grounding & Deterministic Test Reproduction / Clearance",
+    leftHeader: "Agent MR Touching Historical Incident Surface",
+    leftContent: `// Merge Request !5 proposes new note export endpoint:
+@app.get("/notes/{note_id}/export")
+def export_note(note_id: int, user: str = Depends(current_user)):
+    note = find_note(note_id)
+    return {"format": "json", "body": note.body}
+    // VULNERABLE: Omits ownership check (note.owner != user)
+
+$ python tools/regression_gate.py
+Notice: MR diff touches 1 historical incident surface(s):
+  - [INCIDENT-AUTH-001] Broken Object Level Authorization on Export
+    (Reasons: path:app.py, symbol:export_note)`,
+    rightHeader: "Deterministic Regression Reproduction & Clean Fix",
+    rightContent: `[1] Duo Historical Investigator identifies historical failure:
+    - Incident: INCIDENT-AUTH-001 (BOLA / Ownership Invariant)
+    - Pattern: notes_export_ownership (Zero model arbitrary code)
+
+[2] Regression Gate executes reviewed template:
+    $ pytest artifacts/generated/test_tmci_regression.py -q
+    FAILED: TMCI_AUTH_ASSERT status=200 body_exposed=True
+    REGRESSION REPRODUCED: Bob accessed Alice's private launch plan!
+    Pipeline blocked (Exit code 1).
+
+[3] Remediated commit adds ownership check (note.owner != user -> 404):
+    Exact same test executed:
+    test_tmci_cross_user_export_denied PASSED
+    REGRESSION CLEARED: Clean fix verified! Exit code 0.`,
+    statusType: "gate-passed",
+    statusText: "HISTORICAL REGRESSION NEUTRALIZED: Zero arbitrary code execution. Vulnerability blocked, then cleared upon verified fix."
   }
 };
 
 const stages = [
   { num: "01", name: "Plan", mech: "airlock_triage", desc: "Dual-agent custom flow triages issue and detects hidden prompt injections." },
   { num: "02", name: "Create", mech: "Developer Flow", desc: "Foundational agent converts issue into bounded MR under 10 files and 300 lines." },
-  { num: "03", name: "Verify", mech: "unit-tests & Fixer", desc: "26 automated unit tests validate code; Fix Pipeline repairs broken builds." },
+  { num: "03", name: "Verify", mech: "unit-tests & Fixer", desc: "37 automated unit tests validate code; Fix Pipeline repairs broken builds." },
   { num: "04", name: "Package", mech: "build-wheel", desc: "Compiles Python distribution package into standardized dist/*.whl." },
   { num: "05", name: "Secure", mech: "sast_gate.py", desc: "Semgrep SAST and Secret Detection enforced; MR blocked on High/Critical flaws." },
   { num: "06", name: "Release", mech: "publish-staging", desc: "Package uploaded to Generic Package Registry; production gate paused for human." },
-  { num: "07", name: "Configure", mech: "policy_gate.py", desc: "Enforces control-plane integrity against unauthorized pipeline edits." },
+  { num: "07", name: "Configure & Guard", mech: "policy_gate & regression_gate", desc: "Enforces control-plane boundaries and verifies historical incident invariants." },
   { num: "08", name: "Monitor", mech: "smoke-test", desc: "Automated post-deploy job downloads wheel from registry and executes CLI." },
   { num: "09", name: "Govern", mech: "scorecard.py", desc: "Compiles job artifact execution ledger into auditable markdown scorecard." }
 ];

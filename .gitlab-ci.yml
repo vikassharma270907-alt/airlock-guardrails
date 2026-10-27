@@ -93,6 +93,24 @@ fix-budget:
     - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/policy.json" > .trusted_tools/policy.json || cp policy/policy.json .trusted_tools/policy.json'
     - python .trusted_tools/fix_budget.py
 
+regression-gate:
+  extends: .ledger
+  stage: gate
+  variables:
+    GIT_DEPTH: '0'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  script:
+    - mkdir -p .trusted_tools
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:tools/regression_gate.py" > .trusted_tools/regression_gate.py || cp tools/regression_gate.py .trusted_tools/regression_gate.py'
+    - 'git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-main}:policy/incidents.json" > .trusted_tools/incidents.json || cp policy/incidents.json .trusted_tools/incidents.json'
+    - python .trusted_tools/regression_gate.py
+  artifacts:
+    when: always
+    paths:
+      - artifacts/
+
+
 publish-staging:
   stage: staging
   rules:
