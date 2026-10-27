@@ -214,7 +214,7 @@ def main():
         print("  [2] Test ReturnReady State Guard (Readiness Preconditions & Locks)")
         print("  [3] Test CI Control-Plane Policy Gate Simulator")
         print("  [4] Test TextKit Library Utilities")
-        print("  [5] Run Full Automated Test Suite (47 tests + self-tests)")
+        print("  [5] Run Full Automated Test Suite (53 tests + self-tests)")
         print("  [q] Quit")
 
         choice = input("\nSelect [1-5, q] > ").strip().lower()
