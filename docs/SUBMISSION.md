@@ -39,10 +39,11 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
 - Staging Package Registry: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/packages
 - CI/CD Pipeline History: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines
-- Baseline Clean Main Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989694028 (and #2989252436)
+- Baseline Clean Main Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2993995494 (and #2989694028)
 - Baseline Clean MR Pipeline (MR !1): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989715383
 - Control-Plane Protection MR Pipeline (MR !2, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989716535
 - Rename-Evasion Defense MR Pipeline (MR !3, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601
+- SAST Vulnerability Defense MR Pipeline (MR !4, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2992681172
 
 
 ### Real Results & Metrics
