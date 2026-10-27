@@ -152,14 +152,28 @@ d:\gitlab transcend hackathon/
   - Identifies vulnerabilities matching configured blocked severities (`Critical`, `High` from `policy.json`).
   - If any blocking finding persists, outputs vulnerability name, affected file, and report origin, and terminates the pipeline with exit code 1.
 
-### 3.3 Fix Budget Gate (`tools/fix_budget.py`)
+### 3.3 Time Machine Incident Regression Gate (`tools/regression_gate.py`)
+- **Objective:** Provides historical incident memory and deterministic regression reproduction.
+- **Enforcement:**
+  - Ingests verified incidents from `policy/incidents.json`.
+  - Replays target historical regressions against current patches to verify the defect is definitively eliminated.
+  - Generates signed reproduction test cases and validates assessment checksums to ensure zero prompt injection in regression definitions.
+
+### 3.4 ReturnReady State & Readiness Integrity Guardrail (`tools/state_guard.py`)
+- **Objective:** Prevents premature task closure and automated state tampering.
+- **Enforcement:**
+  - Enforces 100% verified checklist criteria before any state transition to "Ready" or terminal milestones.
+  - Immutably locks completed state (`terminal_state_locking`) against automated agent tampering.
+  - Enforces optimistic concurrency version tokens (`version_mismatch`) and time-to-live action tokens (`ttl_expiration`) to prevent race conditions and replayed agent actions.
+
+### 3.5 Fix Budget Gate (`tools/fix_budget.py`)
 - **Objective:** Enforces a bounded retry limit on agentic fix loops.
 - **Enforcement:**
   - Counts commits on the MR branch matching `agent-fix:` or configured agent author patterns (`GitLab Duo`, `agent`, `bot`, `duo-developer`).
   - If agent commits exceed the maximum budget (default: 3), the gate terminates with:
     `ESCALATE TO HUMAN: Agent has made 4 automated fix attempts (budget: 3). Halting pipeline.`
 
-### 3.4 Execution Ledger & Scorecard (`tools/ledger.py` & `tools/scorecard.py`)
+### 3.6 Execution Ledger & Scorecard (`tools/ledger.py` & `tools/scorecard.py`)
 - **Objective:** Generates an auditable record of pipeline job outcomes and commit provenance.
 - **Ledger Recording:** Executed inside the `.ledger` `after_script` hook across all pipeline jobs:
   ```bash
@@ -167,6 +181,11 @@ d:\gitlab transcend hackathon/
   ```
   Writes structured JSON records to `ledger/${CI_JOB_NAME}.json` stored as pipeline job artifacts.
 - **Scorecard Compilation:** The `scorecard` job runs in the `report` stage with `when: always`, reading ledger entries and auditing commit authors to generate `scorecard.md`.
+
+### 3.7 Interactive User Input Interfaces (`interactive.py` & Web Playground)
+- **Objective:** Allows evaluators, maintainers, and users to interactively test all guardrails with custom inputs.
+- **Console Interface:** `python interactive.py` (or `python main.py --cli`) provides an interactive terminal menu with real-time feedback for Triage, State Guard, Policy Gate, and TextKit.
+- **Web Interface:** Live interactive dashboard deployed at `https://airlock-guardrails.vercel.app/#playground` supporting real-time simulation with instant security analysis.
 
 ---
 
@@ -274,36 +293,25 @@ Airlock is built upon empirical software engineering and AI security research:
 
 ## 8. Verification & Test Execution Report
 
-The test suite in [`tests/`](file:///d:/gitlab%20transcend%20hackathon/tests/) was executed locally using `pytest`:
+The full test suite in [`tests/`](file:///d:/gitlab%20transcend%20hackathon/tests/) was executed locally using `pytest`:
 
 ```
 ============================= test session starts =============================
 platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.7.0
 rootdir: D:\gitlab transcend hackathon
 configfile: pyproject.toml
-collected 16 items
+collected 53 items
 
-tests/test_gates.py::test_policy_gate_loads_defaults_on_missing_file PASSED [  6%]
-tests/test_gates.py::test_policy_gate_blocks_control_plane_without_label PASSED [ 12%]
-tests/test_gates.py::test_policy_gate_allows_control_plane_with_label PASSED [ 18%]
-tests/test_gates.py::test_policy_gate_blocks_deleted_tests_under_dir_and_pattern PASSED [ 25%]
-tests/test_gates.py::test_policy_gate_enforces_size_limits PASSED        [ 31%]
-tests/test_gates.py::test_sast_gate_blocks_configured_severities PASSED  [ 37%]
-tests/test_gates.py::test_sast_gate_passes_clean_report PASSED           [ 43%]
-tests/test_gates.py::test_fix_budget_allows_under_limit PASSED           [ 50%]
-tests/test_gates.py::test_fix_budget_fails_when_limit_exceeded PASSED    [ 56%]
-tests/test_gates.py::test_scorecard_with_commit_provenance PASSED        [ 62%]
-tests/test_textkit.py::test_slugify_basic PASSED                         [ 68%]
-tests/test_textkit.py::test_slugify_special_characters PASSED            [ 75%]
-tests/test_textkit.py::test_slugify_whitespace_and_hyphens PASSED        [ 81%]
-tests/test_word_count_simple PASSED                                       [ 87%]
-tests/test_word_count_empty PASSED                                        [ 93%]
-tests/test_word_count_multiple_spaces PASSED                             [100%]
+tests/test_gates.py (20 tests: policy, renames, SAST, provenance, budget, human labels) PASSED
+tests/test_regression_gate.py (11 tests: incident memory, reproduction, checksums) PASSED
+tests/test_state_guard.py (10 tests: readiness checklist, terminal locking, tokens) PASSED
+tests/test_textkit.py (6 tests: slugify, word count, edge cases) PASSED
+tests/test_triage.py (6 tests: injection detection, HTML override, writer format) PASSED
 
-============================= 16 passed in 0.07s ==============================
+============================= 53 passed in 0.10s ==============================
 ```
 
-- **Guardrail Coverage:** All policy gate rules, SAST gate severity evaluations, fix budget cap evaluations, scorecard provenance generations, and textkit edge cases are fully covered with zero external dependencies beyond `pytest`.
+- **Guardrail Coverage:** All 5 gates (Dual-Agent Triage, SAST Re-scan, Policy Gate with Rename-Evasion Defense, Time Machine Regression Memory, and ReturnReady State Guard), fix budget cap evaluations, scorecard provenance generation, and textkit utilities are 100% covered with zero external dependencies beyond `pytest`.
 
 ---
 

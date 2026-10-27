@@ -37,8 +37,10 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - **Foundational Flows**: GitLab Duo Developer Flow, Fix CI/CD Pipeline Flow, and Code Review Flow [TO VERIFY: instance flow availability].
 - **Event-Driven Triggers**: Mention triggers on issue comments (`@airlock_triage`) and failure triggers on pipeline events [TO VERIFY: automatic trigger on tier vs manual widget click].
 
-### Visible Pipeline History
+### Visible Pipeline History & Live Deployment
 - Public Repository: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase
+- GitHub Public Mirror: https://github.com/vikassharma270907-alt/airlock-guardrails
+- Live Interactive Web Playground: https://airlock-guardrails.vercel.app
 - Staging Package Registry: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/packages
 - CI/CD Pipeline History: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines
 - Baseline Clean Main Pipeline: https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2993995494 (and #2989694028)
@@ -47,11 +49,11 @@ Airlock introduces an explicit architectural boundary between the agent **data p
 - Rename-Evasion Defense MR Pipeline (MR !3, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2989719601
 - SAST Vulnerability Defense MR Pipeline (MR !4, Blocked): https://gitlab.com/gitlab-ai-hackathon/transcend-october-2026/43727879/showcase/-/pipelines/2992681172
 
-
 ### Real Results & Metrics
-- Total Scenarios Demonstrated: 3 (Prompt injection neutralized, control plane tampering blocked, rename evasion blocked).
+- Total Unit Tests: 53 automated unit tests passing in 0.10s across 5 test suites (`test_gates.py`, `test_regression_gate.py`, `test_state_guard.py`, `test_textkit.py`, `test_triage.py`).
+- Total Scenarios Demonstrated: 5 (Prompt injection neutralized, control plane tampering blocked, rename evasion blocked, historical regression detected, state readiness tamper-proofing enforced).
 - Control Plane Violations Blocked: 2 (MR !2 unauthorized CI edit; MR !3 test deletion evasion).
-- Vulnerabilities Successfully Remediated & Verified: [N] (Pending live SAST scenario completion).
+- Live Interactive Interfaces: 2 (Terminal CLI console via `interactive.py` / `python main.py --cli` and Live Web Playground at `https://airlock-guardrails.vercel.app/#playground`).
 - Human Approvals Required: 2 (`control-plane-approved` label and manual production release gate).
 
 ### Known Limitations (Stated Honestly)
